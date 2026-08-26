@@ -1,0 +1,10 @@
+# WordPress API Config
+base.uri=http://localhost:8000
+base.path=/wp-json/wp/v2
+wp.username=YOUR_USERNAME
+wp.password=YOUR_PASSWORD
+
+# Database Config
+db.url=jdbc:mysql://localhost:3306/wordpress
+db.user=YOUR_DB_USER
+db.password=YOUR_DB_PASSWORD
