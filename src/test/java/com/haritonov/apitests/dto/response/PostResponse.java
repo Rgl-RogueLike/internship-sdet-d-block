@@ -11,13 +11,13 @@ public class PostResponse {
     private Content content;
 
     @Data
-    private static class Title {
+    public static class Title {
         private String raw;
         private String rendered;
     }
 
     @Data
-    private static class Content {
+    public static class Content {
         private String raw;
         private String rendered;
     }
