@@ -75,4 +75,18 @@ public final class DatabaseManager {
         }
         return null;
     }
+
+    public static String getPostContentById(int postId) {
+        String sql = "SELECT post_content FROM wp_posts WHERE ID = ?";
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(sql)) {
+            preparedStatement.setInt(1, postId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getString("post_content");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to get post content for ID: " + postId, e);
+        }
+        return null;
+    }
 }
