@@ -61,4 +61,18 @@ public final class DatabaseManager {
             System.err.println("Failed to close database connection: " + e.getMessage());
         }
     }
+
+    public static String getPostTitleById(int postId) {
+        String sql = "SELECT post_title FROM wp_posts WHERE ID = ?";
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(sql)) {
+            preparedStatement.setInt(1, postId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getString("post_title");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to get pot title for ID: " + postId, e);
+        }
+        return null;
+    }
 }
