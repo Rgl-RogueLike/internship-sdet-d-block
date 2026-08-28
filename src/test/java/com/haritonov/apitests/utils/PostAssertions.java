@@ -15,13 +15,18 @@ public final class PostAssertions {
                 "Статус в ответе API должен совпадать с отправленным");
         Assert.assertEquals(response.getTitle().getRaw(), request.getTitle(),
                 "Заголовок в ответе API должен совпадать с отправленным");
+        Assert.assertEquals(response.getContent().getRaw(), request.getContent(),
+                "Контент в ответе API должен совпадать с отправленным");
 
         String dbStatus = DatabaseManager.getPostStatusById(response.getId());
         String dbTitle = DatabaseManager.getPostTitleById(response.getId());
+        String dbContent = DatabaseManager.getPostContentById(response.getId());
 
         Assert.assertEquals(dbStatus, request.getStatus(),
                 "Статус в БД должен совпадать с отправленным");
         Assert.assertEquals(dbTitle, request.getTitle(),
                 "Заголовок должен совпадать с отправленным");
+        Assert.assertTrue(dbContent.contains(request.getContent()),
+                "Контент в БД должен содержать отправленный текст");
     }
 }
