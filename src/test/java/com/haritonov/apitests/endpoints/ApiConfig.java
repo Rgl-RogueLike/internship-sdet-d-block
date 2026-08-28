@@ -20,7 +20,7 @@ public class ApiConfig {
                 .setBaseUri(config.baseUri())
                 .setBasePath(config.basePath())
                 .setContentType(ContentType.JSON)
-                .setAuth(RestAssured.basic(config.wpUsername(), config.wpPassword()))
+                .setAuth(RestAssured.preemptive().basic(config.wpUsername(), config.wpPassword()))
                 .build();
     }
 }
