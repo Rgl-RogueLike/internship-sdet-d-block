@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 public class PostsCrudTests extends BaseTest {
 
     @Test
-    public void testCreatePostWithValidData() {
+    public void shouldCreatePostWhenValidDataProvided() {
         PostRequest request = PostRequest.builder()
                 .title(DataGenerator.generatePostTitle())
                 .content(DataGenerator.generatePostContent())
