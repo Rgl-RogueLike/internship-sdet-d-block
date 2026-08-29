@@ -29,4 +29,19 @@ public final class PostAssertions {
         Assert.assertTrue(dbContent.contains(request.getContent()),
                 "Контент в БД должен содержать отправленный текст");
     }
+
+    public static void assertPostUpdatedSuccessfully(PostRequest updateRequest, PostResponse response) {
+        Assert.assertEquals(response.getStatus(), updateRequest.getStatus(),
+                "Статус в ответе API должен совпадать с обновленным");
+        Assert.assertEquals(response.getTitle().getRaw(), updateRequest.getTitle(),
+                "Заголовок в ответе API должен совпадать с обновленным");
+
+        String dbStatus = DatabaseManager.getPostStatusById(response.getId());
+        String dbTitle = DatabaseManager.getPostTitleById(response.getId());
+
+        Assert.assertEquals(dbStatus, updateRequest.getStatus(),
+                "Статус в БД должен совпадать с обновленным");
+        Assert.assertEquals(dbTitle ,updateRequest.getTitle(),
+                "Заголовок в БД должен совпадать с обновленным");
+    }
 }

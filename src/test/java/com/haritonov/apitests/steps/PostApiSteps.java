@@ -45,4 +45,16 @@ public final class PostApiSteps {
                 .extract()
                 .response();
     }
+
+    public static PostResponse updatePost(int id , PostRequest postRequest) {
+        return given()
+                .spec(ApiConfig.getBaseSpec())
+                .body(postRequest)
+                .when()
+                .post(ApiEndpoints.POST_BY_ID, id)
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .extract()
+                .as(PostResponse.class);
+    }
 }

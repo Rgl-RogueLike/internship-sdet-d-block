@@ -20,4 +20,22 @@ public class PostsCrudTests extends BaseTest {
         PostResponse response = PostApiSteps.createPost(request);
         PostAssertions.assertPostCreateSuccessfully(request, response);
     }
+
+    @Test
+    public void shouldUpdatePostWhenNewTitleAndStatusSent() {
+        PostRequest createRequest = PostRequest.builder()
+                .title(DataGenerator.generatePostTitle())
+                .content(DataGenerator.generatePostContent())
+                .status("draft")
+                .build();
+        PostResponse createResponse = PostApiSteps.createPost(createRequest);
+        int postId = createResponse.getId();
+
+        PostRequest updateRequest = PostRequest.builder()
+                .title(DataGenerator.generatePostTitle())
+                .status("publish")
+                .build();
+        PostResponse updateResponse = PostApiSteps.updatePost(postId, updateRequest);
+        PostAssertions.assertPostUpdatedSuccessfully(updateRequest, updateResponse);
+    }
 }
