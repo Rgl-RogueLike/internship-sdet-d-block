@@ -89,4 +89,18 @@ public final class DatabaseManager {
         }
         return null;
     }
+
+    public static int getPostCountByTitle(String title) {
+        String sql = "SELECT COUNT(*) FROM wp_posts WHERE post_title = ?";
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(sql)) {
+            preparedStatement.setString(1, title);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to count posts be title: " + title, e);
+        }
+        return 0;
+    }
 }

@@ -57,4 +57,15 @@ public final class PostApiSteps {
                 .extract()
                 .as(PostResponse.class);
     }
+
+    public static Response attemptToCreatePost(PostRequest postRequest) {
+        return given()
+                .spec(ApiConfig.getBaseSpec())
+                .body(postRequest)
+                .when()
+                .post(ApiEndpoints.POSTS)
+                .then()
+                .extract()
+                .response();
+    }
 }

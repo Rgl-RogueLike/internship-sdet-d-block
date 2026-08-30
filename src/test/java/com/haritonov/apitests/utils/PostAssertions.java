@@ -97,4 +97,16 @@ public final class PostAssertions {
         String dbStatus = DatabaseManager.getPostStatusById(expectedId);
         Assert.assertEquals(dbStatus, ConfigManager.getTestData().statusTrash(), "Статус поста в БД должен быть изменен на 'trash'");
     }
+
+    public static void assertPostNotCreateWithInvalidStatus(Response response, String expectedTitle) {
+        Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_BAD_REQUEST,
+                "Статус код должен быть 400 Bad Request");
+        Assert.assertEquals(response.jsonPath().getString("code"),
+                ConfigManager.getTestData().errorInvalidParam(),
+                "Код ошибки должен быть rest_invalid_param");
+
+        int postCount = DatabaseManager.getPostCountByTitle(expectedTitle);
+        Assert.assertEquals(postCount, 0,
+                "Пост с невалидным статусом не должен создаваться в БД");
+    }
 }
