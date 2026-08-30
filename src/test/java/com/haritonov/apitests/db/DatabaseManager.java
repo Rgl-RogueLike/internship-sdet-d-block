@@ -103,4 +103,18 @@ public final class DatabaseManager {
         }
         return 0;
     }
+
+    public static int getNonExistentPostId() {
+        String sql = "SELECT MAX(ID) FROM wp_posts";
+        try (Statement statement = getConnection().createStatement();
+                ResultSet resultSet = statement.executeQuery(sql)) {
+            if (resultSet.next()) {
+                int maxId = resultSet.getInt(1);
+                return maxId + 1;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to get max post ID", e);
+        }
+        return 1;
+    }
 }
