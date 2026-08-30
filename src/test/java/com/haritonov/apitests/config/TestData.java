@@ -16,4 +16,7 @@ public interface TestData extends Config {
 
     @Key("wp.status.trash")
     String statusTrash();
+
+    @Key("wp.error.invalid.param")
+    String errorInvalidParam();
 }
