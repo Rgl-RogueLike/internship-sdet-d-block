@@ -5,29 +5,21 @@ import com.haritonov.apitests.dto.response.PostResponse;
 import com.haritonov.apitests.steps.PostApiSteps;
 import com.haritonov.apitests.utils.DataGenerator;
 import com.haritonov.apitests.utils.PostAssertions;
+import io.restassured.response.Response;
 import org.testng.annotations.Test;
 
 public class PostsCrudTests extends BaseTest {
 
     @Test
     public void shouldCreatePostWhenValidDataProvided() {
-        PostRequest request = PostRequest.builder()
-                .title(DataGenerator.generatePostTitle())
-                .content(DataGenerator.generatePostContent())
-                .status("draft")
-                .build();
-
+        PostRequest request = DataGenerator.generateDefaultPostRequest("draft");
         PostResponse response = PostApiSteps.createPost(request);
         PostAssertions.assertPostCreateSuccessfully(request, response);
     }
 
     @Test
     public void shouldUpdatePostWhenNewTitleAndStatusSent() {
-        PostRequest createRequest = PostRequest.builder()
-                .title(DataGenerator.generatePostTitle())
-                .content(DataGenerator.generatePostContent())
-                .status("draft")
-                .build();
+        PostRequest createRequest = DataGenerator.generateDefaultPostRequest("draft");
         PostResponse createResponse = PostApiSteps.createPost(createRequest);
         int postId = createResponse.getId();
 
@@ -37,5 +29,15 @@ public class PostsCrudTests extends BaseTest {
                 .build();
         PostResponse updateResponse = PostApiSteps.updatePost(postId, updateRequest);
         PostAssertions.assertPostUpdatedSuccessfully(updateRequest, updateResponse);
+    }
+
+    @Test
+    public void shouldDeletePostWhenForceTrue() {
+        PostRequest createRequest = DataGenerator.generateDefaultPostRequest("draft");
+        PostResponse createResponse = PostApiSteps.createPost(createRequest);
+        int postId = createResponse.getId();
+
+        Response deleteResponse = PostApiSteps.deletePost(postId, true);
+        PostAssertions.assertPostDeletedSuccessfully(deleteResponse, postId);
     }
 }

@@ -3,6 +3,8 @@ package com.haritonov.apitests.utils;
 import com.haritonov.apitests.db.DatabaseManager;
 import com.haritonov.apitests.dto.request.PostRequest;
 import com.haritonov.apitests.dto.response.PostResponse;
+import io.restassured.response.Response;
+import org.apache.http.HttpStatus;
 import org.testng.Assert;
 
 public final class PostAssertions {
@@ -43,5 +45,18 @@ public final class PostAssertions {
                 "Статус в БД должен совпадать с обновленным");
         Assert.assertEquals(dbTitle ,updateRequest.getTitle(),
                 "Заголовок в БД должен совпадать с обновленным");
+    }
+
+    public static void assertPostDeletedSuccessfully(Response deleteResponse, int expectedId) {
+        Assert.assertEquals(deleteResponse.getStatusCode(), HttpStatus.SC_OK,
+                "Статус код удаления должен быть 200");
+        Assert.assertTrue(deleteResponse.jsonPath().getBoolean("deleted"),
+                "Поле 'deleted' в ответе должно быть true");
+        Assert.assertEquals(deleteResponse.jsonPath().getInt("previous.id"), expectedId,
+                "Поле 'previous.id' должно совпадать с ID удаленного поста");
+
+        boolean idPostExists = DatabaseManager.isPostExists(expectedId);
+        Assert.assertFalse(idPostExists,
+                "пост не должен существовать в БД после удаления с force=true");
     }
 }
