@@ -110,7 +110,7 @@ public final class PostAssertions {
                 "Пост с невалидным статусом не должен создаваться в БД");
     }
 
-    public static void assertPostNotUpdatedWithInvalidId(Response response, int invalidId) {
+    public static void assertPostNotFoundWithInvalidId(Response response, int invalidId) {
         Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_NOT_FOUND,
                 "Статус код должен быть 404 Not Found");
         Assert.assertEquals(response.jsonPath().getString("code"),

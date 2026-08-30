@@ -82,6 +82,13 @@ public class PostsCrudTests extends BaseTest {
                 .build();
 
         Response response = PostApiSteps.attemptToUpdatePost(invalidPostId, updateRequest);
-        PostAssertions.assertPostNotUpdatedWithInvalidId(response, invalidPostId);
+        PostAssertions.assertPostNotFoundWithInvalidId(response, invalidPostId);
+    }
+
+    @Test
+    public void shouldNotDeletePostWhenIdInvalid() {
+        int invalidPostId = DatabaseManager.getNonExistentPostId();
+        Response response = PostApiSteps.deletePost(invalidPostId, true);
+        PostAssertions.assertPostNotFoundWithInvalidId(response, invalidPostId);
     }
 }
