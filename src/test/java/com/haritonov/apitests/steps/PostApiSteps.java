@@ -30,7 +30,7 @@ public final class PostApiSteps {
                 .spec(ApiConfig.getBaseSpec())
                 .queryParam("force", force)
                 .when()
-                .delete(ApiEndpoints.POST_BY_ID)
+                .delete(ApiEndpoints.POST_BY_ID, id)
                 .then()
                 .extract()
                 .response();
