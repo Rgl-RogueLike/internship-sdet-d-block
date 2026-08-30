@@ -59,4 +59,26 @@ public final class PostAssertions {
         Assert.assertFalse(idPostExists,
                 "пост не должен существовать в БД после удаления с force=true");
     }
+
+    public static void assertPostCreatedWithDefaultValues(PostResponse response, String expectedTitle) {
+        Assert.assertTrue(response.getId() > 0,
+                "ID поста должен быть больше 0");
+        Assert.assertEquals(response.getStatus(), "draft",
+                "Статус по умолчанию должен быть 'draft'");
+        Assert.assertEquals(response.getTitle().getRaw(), expectedTitle,
+                "Заголовок в ответе API должен совпадать с отправленным");
+        Assert.assertEquals(response.getContent().getRaw(), "",
+                "Контент по умолчанию должен быть пустой строкой");
+
+        String dbStatus = DatabaseManager.getPostStatusById(response.getId());
+        String dbTitle = DatabaseManager.getPostTitleById(response.getId());
+        String dbContent = DatabaseManager.getPostContentById(response.getId());
+
+        Assert.assertEquals(dbStatus, "draft",
+                "Статус в БД по умолчанию должен быть 'draft'");
+        Assert.assertEquals(dbTitle, expectedTitle,
+                "Заголовок в БД должен совпадать с отправленным");
+        Assert.assertTrue(dbContent == null || dbContent.isEmpty(),
+                "Контент в БД должен быть пустым");
+    }
 }

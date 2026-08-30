@@ -40,4 +40,14 @@ public class PostsCrudTests extends BaseTest {
         Response deleteResponse = PostApiSteps.deletePost(postId, true);
         PostAssertions.assertPostDeletedSuccessfully(deleteResponse, postId);
     }
+
+    @Test
+    public void shouldCreatePostWithDefaultsWhenOnlyTitleProvided() {
+        String uniqueTitle = DataGenerator.generatePostTitle();
+        PostRequest request = PostRequest.builder()
+                .title(uniqueTitle)
+                .build();
+        PostResponse response = PostApiSteps.createPost(request);
+        PostAssertions.assertPostCreatedWithDefaultValues(response, uniqueTitle);
+    }
 }
