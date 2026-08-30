@@ -1,5 +1,6 @@
 package com.haritonov.apitests.utils;
 
+import com.haritonov.apitests.config.ConfigManager;
 import com.haritonov.apitests.db.DatabaseManager;
 import com.haritonov.apitests.dto.request.PostRequest;
 import com.haritonov.apitests.dto.response.PostResponse;
@@ -63,7 +64,7 @@ public final class PostAssertions {
     public static void assertPostCreatedWithDefaultValues(PostResponse response, String expectedTitle) {
         Assert.assertTrue(response.getId() > 0,
                 "ID поста должен быть больше 0");
-        Assert.assertEquals(response.getStatus(), "draft",
+        Assert.assertEquals(response.getStatus(), ConfigManager.getTestData().statusDraft(),
                 "Статус по умолчанию должен быть 'draft'");
         Assert.assertEquals(response.getTitle().getRaw(), expectedTitle,
                 "Заголовок в ответе API должен совпадать с отправленным");
@@ -74,11 +75,26 @@ public final class PostAssertions {
         String dbTitle = DatabaseManager.getPostTitleById(response.getId());
         String dbContent = DatabaseManager.getPostContentById(response.getId());
 
-        Assert.assertEquals(dbStatus, "draft",
+        Assert.assertEquals(dbStatus, ConfigManager.getTestData().statusDraft(),
                 "Статус в БД по умолчанию должен быть 'draft'");
         Assert.assertEquals(dbTitle, expectedTitle,
                 "Заголовок в БД должен совпадать с отправленным");
         Assert.assertTrue(dbContent == null || dbContent.isEmpty(),
                 "Контент в БД должен быть пустым");
+    }
+
+    public static void assertPostMovedToTrashSuccessfully(Response deleteResponse, int expectedId) {
+        Assert.assertEquals(deleteResponse.getStatusCode(), HttpStatus.SC_OK,
+                "Статус код удаления должен быть 200");
+        Assert.assertEquals(deleteResponse.jsonPath().getInt("id"), expectedId,
+                "Поле 'deleted' в ответе должно быть true");
+        Assert.assertEquals(deleteResponse.jsonPath().getString("status"),
+                ConfigManager.getTestData().statusTrash(),
+                "Поле 'previous.id' должно совпадать с ID удаленного поста");
+
+        boolean isPostExists = DatabaseManager.isPostExists(expectedId);
+        Assert.assertTrue(isPostExists, "Пост должен физически оставаться в БД после перемещения в корзину");
+        String dbStatus = DatabaseManager.getPostStatusById(expectedId);
+        Assert.assertEquals(dbStatus, ConfigManager.getTestData().statusTrash(), "Статус поста в БД должен быть изменен на 'trash'");
     }
 }
