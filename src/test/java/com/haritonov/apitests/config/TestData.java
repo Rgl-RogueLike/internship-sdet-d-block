@@ -7,4 +7,13 @@ public interface TestData extends Config {
 
     @Key("faker.paragraph.size")
     int paragraphSize();
+
+    @Key("wp.status.draft")
+    String statusDraft();
+
+    @Key("wp.status.publish")
+    String statusPublish();
+
+    @Key("wp.status.trash")
+    String statusTrash();
 }
