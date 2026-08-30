@@ -109,4 +109,14 @@ public final class PostAssertions {
         Assert.assertEquals(postCount, 0,
                 "Пост с невалидным статусом не должен создаваться в БД");
     }
+
+    public static void assertPostNotUpdatedWithInvalidId(Response response, int invalidId) {
+        Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_NOT_FOUND,
+                "Статус код должен быть 404 Not Found");
+        Assert.assertEquals(response.jsonPath().getString("code"),
+                ConfigManager.getTestData().errorPostInvalidId(),
+                "Код ошибки должен быть rest_post_invalid_id");
+        boolean isPostExists = DatabaseManager.isPostExists(invalidId);
+        Assert.assertFalse(isPostExists, "Поста с невалидным ID не должно существовать в БД");
+    }
 }

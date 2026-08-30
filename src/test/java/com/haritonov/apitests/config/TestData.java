@@ -19,4 +19,7 @@ public interface TestData extends Config {
 
     @Key("wp.error.invalid.param")
     String errorInvalidParam();
+
+    @Key("wp.error.invalid.id")
+    String errorPostInvalidId();
 }

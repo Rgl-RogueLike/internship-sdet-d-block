@@ -68,4 +68,15 @@ public final class PostApiSteps {
                 .extract()
                 .response();
     }
+
+    public static Response attemptToUpdatePost(int id, PostRequest postRequest) {
+        return given()
+                .spec(ApiConfig.getBaseSpec())
+                .body(postRequest)
+                .when()
+                .post(ApiEndpoints.POST_BY_ID, id)
+                .then()
+                .extract()
+                .response();
+    }
 }

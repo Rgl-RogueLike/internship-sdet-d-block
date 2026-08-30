@@ -1,6 +1,7 @@
 package com.haritonov.apitests.tests;
 
 import com.haritonov.apitests.config.ConfigManager;
+import com.haritonov.apitests.db.DatabaseManager;
 import com.haritonov.apitests.dto.request.PostRequest;
 import com.haritonov.apitests.dto.response.PostResponse;
 import com.haritonov.apitests.steps.PostApiSteps;
@@ -71,5 +72,16 @@ public class PostsCrudTests extends BaseTest {
                 .build();
         Response response = PostApiSteps.attemptToCreatePost(request);
         PostAssertions.assertPostNotCreateWithInvalidStatus(response, uniqueTitle);
+    }
+
+    @Test
+    public void shouldNotUpdatePostWhenIdInvalid() {
+        int invalidPostId = DatabaseManager.getNonExistentPostId();
+        PostRequest updateRequest = PostRequest.builder()
+                .title(DataGenerator.generatePostTitle())
+                .build();
+
+        Response response = PostApiSteps.attemptToUpdatePost(invalidPostId, updateRequest);
+        PostAssertions.assertPostNotUpdatedWithInvalidId(response, invalidPostId);
     }
 }
