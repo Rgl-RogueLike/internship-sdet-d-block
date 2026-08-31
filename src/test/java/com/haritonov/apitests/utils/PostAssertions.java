@@ -119,4 +119,15 @@ public final class PostAssertions {
         boolean isPostExists = DatabaseManager.isPostExists(invalidId);
         Assert.assertFalse(isPostExists, "Поста с невалидным ID не должно существовать в БД");
     }
+
+    public static void assertPostNotUpdatedWithInvalidStatus(Response response, int postId, String initialStatus) {
+        Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_BAD_REQUEST,
+                "Статус код должен быть 400 Bad Request");
+        Assert.assertEquals(response.jsonPath().getString("code"),
+                ConfigManager.getTestData().errorInvalidParam(),
+                "Статус код должен быть rest_invalid_param");
+        String dbStatus = DatabaseManager.getPostStatusById(postId);
+        Assert.assertEquals(dbStatus, initialStatus,
+                "Статус поста в БД не должен измениться после неудачного обновления");
+    }
 }

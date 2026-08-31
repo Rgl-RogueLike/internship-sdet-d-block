@@ -68,7 +68,7 @@ public class PostsCrudTests extends BaseTest {
         String uniqueTitle = DataGenerator.generatePostTitle();
         PostRequest request = PostRequest.builder()
                 .title(uniqueTitle)
-                .status(DataGenerator.generatePostTitle())
+                .status(ConfigManager.getTestData().statusInvaid())
                 .build();
         Response response = PostApiSteps.attemptToCreatePost(request);
         PostAssertions.assertPostNotCreateWithInvalidStatus(response, uniqueTitle);
@@ -90,5 +90,19 @@ public class PostsCrudTests extends BaseTest {
         int invalidPostId = DatabaseManager.getNonExistentPostId();
         Response response = PostApiSteps.deletePost(invalidPostId, true);
         PostAssertions.assertPostNotFoundWithInvalidId(response, invalidPostId);
+    }
+
+    @Test
+    public void shouldNotUpdatePostWhenStatusInvalid() {
+        String initialStatus = ConfigManager.getTestData().statusDraft();
+        PostRequest createRequest = DataGenerator.generateDefaultPostRequest(initialStatus);
+        PostResponse createResponse = PostApiSteps.createPost(createRequest);
+        int postId = createResponse.getId();
+
+        PostRequest updateRequest = PostRequest.builder()
+                .status(ConfigManager.getTestData().statusInvaid())
+                .build();
+        Response response = PostApiSteps.attemptToUpdatePost(postId, updateRequest);
+        PostAssertions.assertPostNotUpdatedWithInvalidStatus(response, postId, initialStatus);
     }
 }
