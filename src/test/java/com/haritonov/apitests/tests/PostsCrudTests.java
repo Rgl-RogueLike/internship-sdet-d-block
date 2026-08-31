@@ -120,6 +120,10 @@ public class PostsCrudTests extends BaseTest {
         PostAssertions.assertPostNotUpdatedWithInvalidStatus(response, postId, initialStatus);
     }
 
+    /**
+     * Очистка тестовых данных после каждого теста.
+     * Удаляет все созданные в рамках теста посты, чтобы не засорять БД.
+     */
     @AfterMethod
     public void cleanUpTestData() {
         createdPostIds.forEach(id -> {
