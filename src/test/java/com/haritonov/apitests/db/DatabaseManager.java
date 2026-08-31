@@ -88,7 +88,7 @@ public final class DatabaseManager {
                 connection.close();
             }
         } catch (SQLException e) {
-            System.err.println("Failed to close database connection: " + e.getMessage());
+            throw new RuntimeException("Failed to close database connection:" + e);
         }
     }
 
