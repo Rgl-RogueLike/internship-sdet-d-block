@@ -8,14 +8,24 @@ import com.haritonov.apitests.steps.PostApiSteps;
 import com.haritonov.apitests.utils.DataGenerator;
 import com.haritonov.apitests.utils.PostAssertions;
 import io.restassured.response.Response;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PostsCrudTests extends BaseTest {
+
+    /**
+     * Список для хранения ID созданных потсов в рамках одного теста
+     */
+    private final List<Integer> createdPostIds = new ArrayList<>();
 
     @Test(description = "TC-001: Успешное создание поста с валидными данными")
     public void shouldCreatePostWhenValidDataProvided() {
         PostRequest request = DataGenerator.generateDefaultPostRequest(ConfigManager.getTestData().statusDraft());
         PostResponse response = PostApiSteps.createPost(request);
+        createdPostIds.add(response.getId());
         PostAssertions.assertPostCreatedSuccessfully(request, response);
     }
 
@@ -24,6 +34,7 @@ public class PostsCrudTests extends BaseTest {
         PostRequest createRequest = DataGenerator.generateDefaultPostRequest(ConfigManager.getTestData().statusDraft());
         PostResponse createResponse = PostApiSteps.createPost(createRequest);
         int postId = createResponse.getId();
+        createdPostIds.add(postId);
 
         PostRequest updateRequest = PostRequest.builder()
                 .title(DataGenerator.generatePostTitle())
@@ -50,6 +61,7 @@ public class PostsCrudTests extends BaseTest {
                 .title(uniqueTitle)
                 .build();
         PostResponse response = PostApiSteps.createPost(request);
+        createdPostIds.add(response.getId());
         PostAssertions.assertPostCreatedWithDefaultValues(response, uniqueTitle);
     }
 
@@ -58,6 +70,7 @@ public class PostsCrudTests extends BaseTest {
         PostRequest createRequest = DataGenerator.generateDefaultPostRequest(ConfigManager.getTestData().statusDraft());
         PostResponse createResponse = PostApiSteps.createPost(createRequest);
         int postId = createResponse.getId();
+        createdPostIds.add(postId);
 
         Response deleteResponse = PostApiSteps.deletePost(postId, false);
         PostAssertions.assertPostMovedToTrashSuccessfully(deleteResponse, postId);
@@ -98,11 +111,24 @@ public class PostsCrudTests extends BaseTest {
         PostRequest createRequest = DataGenerator.generateDefaultPostRequest(initialStatus);
         PostResponse createResponse = PostApiSteps.createPost(createRequest);
         int postId = createResponse.getId();
+        createdPostIds.add(postId);
 
         PostRequest updateRequest = PostRequest.builder()
                 .status(ConfigManager.getTestData().statusInvalid())
                 .build();
         Response response = PostApiSteps.attemptToUpdatePost(postId, updateRequest);
         PostAssertions.assertPostNotUpdatedWithInvalidStatus(response, postId, initialStatus);
+    }
+
+    @AfterMethod
+    public void cleanUpTestData() {
+        createdPostIds.forEach(id -> {
+            try {
+                PostApiSteps.deletePost(id, true);
+            } catch (Exception ignored) {
+
+            }
+        });
+        createdPostIds.clear();
     }
 }
