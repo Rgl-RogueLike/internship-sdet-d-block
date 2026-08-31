@@ -23,7 +23,7 @@ public final class DataGenerator {
      * @return строка со случайным заголовком
      */
     public static String generatePostTitle() {
-        return "Test Post: " + faker.book().title();
+        return "Test Post: " + faker.book().title()+ " - " + System.currentTimeMillis();
     }
 
     /**
