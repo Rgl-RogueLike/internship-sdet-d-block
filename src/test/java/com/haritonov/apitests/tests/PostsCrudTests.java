@@ -17,7 +17,7 @@ import java.util.List;
 public class PostsCrudTests extends BaseTest {
 
     /**
-     * Список для хранения ID созданных потсов в рамках одного теста
+     * Список для хранения ID созданных постов в рамках одного теста
      */
     private final List<Integer> createdPostIds = new ArrayList<>();
 
