@@ -7,12 +7,23 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 
+/**
+ * Конфигурационный класс для REST Assured.
+ * <p>
+ * Предоставляет базовую спецификацию ({@link RequestSpecification}) для всех API-запросов.
+ * Включает в себя Base URI, Base Path, Content-Type и настройку Preemptive Basic-аутентификации.
+ */
 public class ApiConfig {
 
     private ApiConfig() {
 
     }
 
+    /**
+     * Создает и возвращает базовую спецификацию запроса.
+     *
+     * @return объект {@link RequestSpecification}
+     */
     public static RequestSpecification getBaseSpec() {
         Configuration config = ConfigManager.getConfig();
 

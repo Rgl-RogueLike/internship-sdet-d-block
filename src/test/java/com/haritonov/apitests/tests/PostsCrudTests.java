@@ -12,14 +12,14 @@ import org.testng.annotations.Test;
 
 public class PostsCrudTests extends BaseTest {
 
-    @Test
+    @Test(description = "TC-001: Успешное создание поста с валидными данными")
     public void shouldCreatePostWhenValidDataProvided() {
         PostRequest request = DataGenerator.generateDefaultPostRequest(ConfigManager.getTestData().statusDraft());
         PostResponse response = PostApiSteps.createPost(request);
-        PostAssertions.assertPostCreateSuccessfully(request, response);
+        PostAssertions.assertPostCreatedSuccessfully(request, response);
     }
 
-    @Test
+    @Test(description = "TC-002: Успешное редактирование поста (изменение заголовка и статуса)")
     public void shouldUpdatePostWhenNewTitleAndStatusSent() {
         PostRequest createRequest = DataGenerator.generateDefaultPostRequest(ConfigManager.getTestData().statusDraft());
         PostResponse createResponse = PostApiSteps.createPost(createRequest);
@@ -33,7 +33,7 @@ public class PostsCrudTests extends BaseTest {
         PostAssertions.assertPostUpdatedSuccessfully(updateRequest, updateResponse);
     }
 
-    @Test
+    @Test(description = "TC-003: Жесткое удаление поста (с параметром force=true)")
     public void shouldDeletePostWhenForceTrue() {
         PostRequest createRequest = DataGenerator.generateDefaultPostRequest(ConfigManager.getTestData().statusDraft());
         PostResponse createResponse = PostApiSteps.createPost(createRequest);
@@ -43,7 +43,7 @@ public class PostsCrudTests extends BaseTest {
         PostAssertions.assertPostDeletedSuccessfully(deleteResponse, postId);
     }
 
-    @Test
+    @Test(description = "TC-004: Создание поста со значениями по умолчанию (только заголовок)")
     public void shouldCreatePostWithDefaultsWhenOnlyTitleProvided() {
         String uniqueTitle = DataGenerator.generatePostTitle();
         PostRequest request = PostRequest.builder()
@@ -53,7 +53,7 @@ public class PostsCrudTests extends BaseTest {
         PostAssertions.assertPostCreatedWithDefaultValues(response, uniqueTitle);
     }
 
-    @Test
+    @Test(description = "TC-005: Безопасное удаление (перемещение в корзину без параметра force)")
     public void shouldMovePostToTrashWhenForceNotSent() {
         PostRequest createRequest = DataGenerator.generateDefaultPostRequest(ConfigManager.getTestData().statusDraft());
         PostResponse createResponse = PostApiSteps.createPost(createRequest);
@@ -63,18 +63,18 @@ public class PostsCrudTests extends BaseTest {
         PostAssertions.assertPostMovedToTrashSuccessfully(deleteResponse, postId);
     }
 
-    @Test
+    @Test(description = "TC-006: Негативный - создание поста с невалидным статусом")
     public void shouldNotCreatePostWhenStatusInvalid() {
         String uniqueTitle = DataGenerator.generatePostTitle();
         PostRequest request = PostRequest.builder()
                 .title(uniqueTitle)
-                .status(ConfigManager.getTestData().statusInvaid())
+                .status(ConfigManager.getTestData().statusInvalid())
                 .build();
         Response response = PostApiSteps.attemptToCreatePost(request);
-        PostAssertions.assertPostNotCreateWithInvalidStatus(response, uniqueTitle);
+        PostAssertions.assertPostNotCreatedWithInvalidStatus(response, uniqueTitle);
     }
 
-    @Test
+    @Test(description = "TC-007: Негативный - редактирование несуществующего поста")
     public void shouldNotUpdatePostWhenIdInvalid() {
         int invalidPostId = DatabaseManager.getNonExistentPostId();
         PostRequest updateRequest = PostRequest.builder()
@@ -85,14 +85,14 @@ public class PostsCrudTests extends BaseTest {
         PostAssertions.assertPostNotFoundWithInvalidId(response, invalidPostId);
     }
 
-    @Test
+    @Test(description = "TC-008: Негативный - удаление несуществующего поста")
     public void shouldNotDeletePostWhenIdInvalid() {
         int invalidPostId = DatabaseManager.getNonExistentPostId();
         Response response = PostApiSteps.deletePost(invalidPostId, true);
         PostAssertions.assertPostNotFoundWithInvalidId(response, invalidPostId);
     }
 
-    @Test
+    @Test(description = "TC-009: Негативный - обновление поста с невалидным статусом")
     public void shouldNotUpdatePostWhenStatusInvalid() {
         String initialStatus = ConfigManager.getTestData().statusDraft();
         PostRequest createRequest = DataGenerator.generateDefaultPostRequest(initialStatus);
@@ -100,7 +100,7 @@ public class PostsCrudTests extends BaseTest {
         int postId = createResponse.getId();
 
         PostRequest updateRequest = PostRequest.builder()
-                .status(ConfigManager.getTestData().statusInvaid())
+                .status(ConfigManager.getTestData().statusInvalid())
                 .build();
         Response response = PostApiSteps.attemptToUpdatePost(postId, updateRequest);
         PostAssertions.assertPostNotUpdatedWithInvalidStatus(response, postId, initialStatus);
