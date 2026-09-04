@@ -53,4 +53,16 @@ public interface TestData extends Config {
      */
     @Key("wp.status.invalid")
     String statusInvalid();
+
+    /**
+     * Префикс slug для тестовых постов WordPress.
+     */
+    @Key("wp.slug.prefix")
+    String slugPrefix();
+
+    /**
+     * Контекст запроса к API, предоставляющий доступ к raw полям
+     */
+    @Key("wp.context.edit")
+    String contextEdit();
 }
