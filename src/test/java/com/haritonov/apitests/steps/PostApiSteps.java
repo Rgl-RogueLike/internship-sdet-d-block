@@ -198,6 +198,11 @@ public final class PostApiSteps {
                 .response();
     }
 
+    /**
+     * Шаг: Получение данных поста по строковому значению.
+     * @param stringId Строковое значение ID
+     * @return Ответ сервера
+     */
     public static Response getPostByStringId(String stringId) {
         return given()
                 .spec(ApiConfig.getBaseSpec())
