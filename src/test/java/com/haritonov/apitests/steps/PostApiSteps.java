@@ -141,9 +141,37 @@ public final class PostApiSteps {
                 .response();
     }
 
+    /**
+     * Шаг: Поиск постов по переданному тексту.
+     * <p>
+     * Автоматически добавляет параметр {@code context=edit} для получения доступа к raw полям.
+     *
+     * @param searchText Текст для поиска (заголовок или контент)
+     * @return объект {@link Response}
+     */
     public static Response searchPosts(String searchText) {
         return given()
                 .spec(ApiConfig.getBaseSpec())
+                .queryParam("search", searchText)
+                .queryParam("context", ConfigManager.getTestData().contextEdit())
+                .when()
+                .get(ApiEndpoints.POSTS)
+                .then()
+                .extract()
+                .response();
+    }
+
+    /**
+     * Шаг: Фильтрация постов по статусу и поисковому тексту.
+     *
+     * @param status Статус поста
+     * @param searchText Текст для поиска (заголовок или контент)
+     * @return Ответ сервера (Response)
+     */
+    public static Response getPostsByStatusAndSearch(String status, String searchText) {
+        return given()
+                .spec(ApiConfig.getBaseSpec())
+                .queryParam("status", status)
                 .queryParam("search", searchText)
                 .queryParam("context", ConfigManager.getTestData().contextEdit())
                 .when()

@@ -88,4 +88,24 @@ public class PostsGetTests extends BaseTest {
         Assert.assertEquals(foundPosts.getFirst().getContent().getRaw(), testPost.content(),
                 "Заголовок первого найденного поста должен совпадать с созданным");
     }
+
+    @Test(description = "ТС-013: Фильтрация постов по валидному статусу")
+    public void shouldFilterPostsWhenStatusIsValid() {
+        String status = ConfigManager.getTestData().statusDraft();
+        PostsDbHelper.DbTestPost testPost = PostsDbHelper.createTestPostInDb(status);
+        dbCreatedPostIds.add(testPost.id());
+
+        Response response = PostApiSteps.getPostsByStatusAndSearch(status, testPost.title());
+        Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_OK,
+                "Статус код должен быть 200 ОК");
+        PostResponse[] foundPostsArray = response.as(PostResponse[].class);
+        List<PostResponse> foundPosts = Arrays.asList(foundPostsArray);
+
+        Assert.assertFalse(foundPosts.isEmpty(),
+                "Массив найденных постов не должен быть пустым");
+        Assert.assertEquals(foundPosts.getFirst().getId(), testPost.id(),
+                "ID первого найденного поста должен совпадать с созданным");
+        Assert.assertEquals(foundPosts.getFirst().getStatus(), status,
+                "Заголовок первого найденного поста должен совпадать с созданным");
+    }
 }
