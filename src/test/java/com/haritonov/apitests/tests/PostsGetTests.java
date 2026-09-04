@@ -134,7 +134,7 @@ public class PostsGetTests extends BaseTest {
 
     @Test(description = "TC-016: Получение поста с невалидным форматом ID")
     public void shouldNotGetPostIdFormatString() {
-        Response response = PostApiSteps.getPostByStringId("invalid_string");
+        Response response = PostApiSteps.getPostByStringId(ConfigManager.getTestData().invalidIdFormat());
         Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_NOT_FOUND,
                 "");
         Assert.assertEquals(response.jsonPath().getString("code"),

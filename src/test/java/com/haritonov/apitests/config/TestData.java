@@ -71,4 +71,10 @@ public interface TestData extends Config {
      */
     @Key("wp.error.no.route")
     String errorNoRoute();
+
+    /**
+     * Невалидный формат ID для негативных тестов
+     */
+    @Key("wp.invalid.id.format")
+    String invalidIdFormat();
 }
