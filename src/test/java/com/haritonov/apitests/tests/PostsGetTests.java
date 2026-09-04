@@ -108,4 +108,16 @@ public class PostsGetTests extends BaseTest {
         Assert.assertEquals(foundPosts.getFirst().getStatus(), status,
                 "Заголовок первого найденного поста должен совпадать с созданным");
     }
+
+    @Test(description = "TC-014: Получение данных несуществующего поста")
+    public void shouldNotGetPostWhenIdInvalid() {
+        int invalidPostId = PostDao.getNonExistentPostId();
+        Response response = PostApiSteps.getPost(invalidPostId);
+
+        Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_NOT_FOUND,
+                "Статус код должен быть 404 Not Found");
+        Assert.assertEquals(response.jsonPath().getString("code"),
+                ConfigManager.getTestData().errorPostInvalidId(),
+                "Код ошибки должен быть rest_post_invalid_id");
+    }
 }
