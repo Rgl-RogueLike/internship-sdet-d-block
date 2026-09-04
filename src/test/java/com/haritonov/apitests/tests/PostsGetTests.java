@@ -69,4 +69,23 @@ public class PostsGetTests extends BaseTest {
         Assert.assertEquals(foundPosts.getFirst().getTitle().getRaw(), testPost.title(),
                 "Заголовок первого найденного поста должен совпадать с созданным");
     }
+
+    @Test(description = "TC-012: Поиск постов по контенту")
+    public void shouldFindPostWhenSearchByContent() {
+        PostsDbHelper.DbTestPost testPost = PostsDbHelper.createTestPostInDb(ConfigManager.getTestData().statusPublish());
+        dbCreatedPostIds.add(testPost.id());
+
+        Response response = PostApiSteps.searchPosts(testPost.content());
+        Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_OK,
+                "Статус код должен быть 200 ОК");
+        PostResponse[] foundPostsArray = response.as(PostResponse[].class);
+        List<PostResponse> foundPosts = Arrays.asList(foundPostsArray);
+
+        Assert.assertFalse(foundPosts.isEmpty(),
+                "Массив найденных постов не должен быть пустым");
+        Assert.assertEquals(foundPosts.getFirst().getId(), testPost.id(),
+                "ID первого найденного поста должен совпадать с созданным");
+        Assert.assertEquals(foundPosts.getFirst().getContent().getRaw(), testPost.content(),
+                "Заголовок первого найденного поста должен совпадать с созданным");
+    }
 }
