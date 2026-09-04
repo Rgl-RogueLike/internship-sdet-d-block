@@ -196,4 +196,14 @@ public final class PostApiSteps {
                 .extract()
                 .response();
     }
+
+    public static Response getPostByStringId(String stringId) {
+        return given()
+                .spec(ApiConfig.getBaseSpec())
+                .when()
+                .get(ApiEndpoints.POST_BY_ID, stringId)
+                .then()
+                .extract()
+                .response();
+    }
 }

@@ -131,4 +131,14 @@ public class PostsGetTests extends BaseTest {
                 ConfigManager.getTestData().errorInvalidParam(),
                 "Код ошибки должен быть rest_invalid_param");
     }
+
+    @Test(description = "TC-016: Получение поста с невалидным форматом ID")
+    public void shouldNotGetPostIdFormatString() {
+        Response response = PostApiSteps.getPostByStringId("invalid_string");
+        Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_NOT_FOUND,
+                "");
+        Assert.assertEquals(response.jsonPath().getString("code"),
+                ConfigManager.getTestData().errorNoRoute(),
+                "");
+    }
 }

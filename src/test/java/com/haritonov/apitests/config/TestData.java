@@ -65,4 +65,10 @@ public interface TestData extends Config {
      */
     @Key("wp.context.edit")
     String contextEdit();
+
+    /**
+     * Код ошибки API при передаче невалидного формата ID.
+     */
+    @Key("wp.error.no.route")
+    String errorNoRoute();
 }
