@@ -4,7 +4,7 @@ import com.haritonov.apitests.config.ConfigManager;
 import com.haritonov.apitests.db.PostDao;
 import com.haritonov.apitests.dto.response.PostResponse;
 import com.haritonov.apitests.steps.PostApiSteps;
-import com.haritonov.apitests.utils.DataGenerator;
+import com.haritonov.apitests.utils.PostsDbHelper;
 import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
 import org.testng.Assert;
@@ -12,11 +12,20 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class PostsGetTests extends BaseTest {
+
+    /**
+     * Список для хранения ID постов, созданных напрямую в БД
+     */
     private final List<Integer> dbCreatedPostIds = new ArrayList<>();
 
+    /**
+     * Очистка тестовых данных после каждого теста.
+     * Удаляет все созданные в рамках теста посты, чтобы не засорять БД.
+     */
     @AfterMethod
     public void cleanUpDbData() {
         dbCreatedPostIds.forEach(PostDao::deletePostDirectly);
@@ -25,19 +34,39 @@ public class PostsGetTests extends BaseTest {
 
     @Test(description = "TC-010: Получение данных поста по существующему ID")
     public void shouldGetPostWhenIdExists() {
-        String uniqueTitle = DataGenerator.generatePostTitle();
-        String uniqueContent = DataGenerator.generatePostContent();
-        String status = ConfigManager.getTestData().statusPublish();
+        PostsDbHelper.DbTestPost testPost = PostsDbHelper.createTestPostInDb(ConfigManager.getTestData().statusPublish());
+        dbCreatedPostIds.add(testPost.id());
 
-        int postId = PostDao.createPostDirectly(uniqueTitle, uniqueContent, status);
-        dbCreatedPostIds.add(postId);
-
-        Response response = PostApiSteps.getPost(postId);
+        Response response = PostApiSteps.getPost(testPost.id());
         Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_OK,
                 "Статус код должен быть 200 ОК");
         PostResponse postResponse = response.as(PostResponse.class);
-        Assert.assertEquals(postResponse.getId(), postId);
-        Assert.assertEquals(postResponse.getTitle().getRaw(), uniqueTitle);
-        Assert.assertEquals(postResponse.getStatus(), status);
+        Assert.assertEquals(postResponse.getId(), testPost.id(),
+                "ID поста в ответе должен совпадать с ID из БД");
+        Assert.assertEquals(postResponse.getTitle().getRaw(), testPost.title(),
+                "Заголовок raw должен совпадать с созданным в БД");
+        Assert.assertEquals(postResponse.getStatus(), ConfigManager.getTestData().statusPublish(),
+                "Статус поста должен совпадать с созданным в БД");
+    }
+
+    @Test(description = "TC-011: Поиск постов по заголовку")
+    public void shouldFindPostWhenSearchByTitle() {
+        PostsDbHelper.DbTestPost testPost = PostsDbHelper.createTestPostInDb(ConfigManager.getTestData().statusPublish());
+        dbCreatedPostIds.add(testPost.id());
+
+        Response response = PostApiSteps.searchPosts(testPost.title());
+
+        Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_OK,
+                "Статус код должен быть 200 ОК");
+
+        PostResponse[] foundPostsArray = response.as(PostResponse[].class);
+        List<PostResponse> foundPosts = Arrays.asList(foundPostsArray);
+
+        Assert.assertFalse(foundPosts.isEmpty(),
+                "Массив найденных постов не должен быть пустым");
+        Assert.assertEquals(foundPosts.getFirst().getId(), testPost.id(),
+                "ID первого найденного поста должен совпадать с созданным");
+        Assert.assertEquals(foundPosts.getFirst().getTitle().getRaw(), testPost.title(),
+                "Заголовок первого найденного поста должен совпадать с созданным");
     }
 }

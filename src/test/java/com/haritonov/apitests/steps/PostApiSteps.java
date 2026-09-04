@@ -140,4 +140,16 @@ public final class PostApiSteps {
                 .extract()
                 .response();
     }
+
+    public static Response searchPosts(String searchText) {
+        return given()
+                .spec(ApiConfig.getBaseSpec())
+                .queryParam("search", searchText)
+                .queryParam("context", ConfigManager.getTestData().contextEdit())
+                .when()
+                .get(ApiEndpoints.POSTS)
+                .then()
+                .extract()
+                .response();
+    }
 }
