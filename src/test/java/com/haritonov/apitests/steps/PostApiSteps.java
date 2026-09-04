@@ -1,5 +1,6 @@
 package com.haritonov.apitests.steps;
 
+import com.haritonov.apitests.config.ConfigManager;
 import com.haritonov.apitests.dto.request.PostRequest;
 import com.haritonov.apitests.dto.response.PostResponse;
 import com.haritonov.apitests.endpoints.ApiConfig;
@@ -118,6 +119,95 @@ public final class PostApiSteps {
                 .body(postRequest)
                 .when()
                 .post(ApiEndpoints.POST_BY_ID, id)
+                .then()
+                .extract()
+                .response();
+    }
+
+    /**
+     * Шаг: Получение данных поста по ID (с контекстом edit для доступа к raw полям).
+     *
+     * @param id ID поста
+     * @return Ответ сервера
+     */
+    public static Response getPost(int id) {
+        return given()
+                .spec(ApiConfig.getBaseSpec())
+                .queryParam("context", ConfigManager.getTestData().contextEdit())
+                .when()
+                .get(ApiEndpoints.POST_BY_ID, id)
+                .then()
+                .extract()
+                .response();
+    }
+
+    /**
+     * Шаг: Поиск постов по переданному тексту.
+     * <p>
+     * Автоматически добавляет параметр {@code context=edit} для получения доступа к raw полям.
+     *
+     * @param searchText Текст для поиска (заголовок или контент)
+     * @return объект {@link Response}
+     */
+    public static Response searchPosts(String searchText) {
+        return given()
+                .spec(ApiConfig.getBaseSpec())
+                .queryParam("search", searchText)
+                .queryParam("context", ConfigManager.getTestData().contextEdit())
+                .when()
+                .get(ApiEndpoints.POSTS)
+                .then()
+                .extract()
+                .response();
+    }
+
+    /**
+     * Шаг: Фильтрация постов по статусу и поисковому тексту.
+     *
+     * @param status     Статус поста
+     * @param searchText Текст для поиска (заголовок или контент)
+     * @return Ответ сервера
+     */
+    public static Response getPostsByStatusAndSearch(String status, String searchText) {
+        return given()
+                .spec(ApiConfig.getBaseSpec())
+                .queryParam("status", status)
+                .queryParam("search", searchText)
+                .queryParam("context", ConfigManager.getTestData().contextEdit())
+                .when()
+                .get(ApiEndpoints.POSTS)
+                .then()
+                .extract()
+                .response();
+    }
+
+    /**
+     * Шаг: Получение списка постов с фильтрацией по статусу.
+     *
+     * @param status Статус поста
+     * @return Ответ сервера
+     */
+    public static Response getPostsByStatus(String status) {
+        return given()
+                .spec(ApiConfig.getBaseSpec())
+                .queryParam("status", status)
+                .when()
+                .get(ApiEndpoints.POSTS)
+                .then()
+                .extract()
+                .response();
+    }
+
+    /**
+     * Шаг: Получение данных поста по строковому значению.
+     * @param stringId Строковое значение ID
+     * @return Ответ сервера
+     */
+    public static Response getPostByStringId(String stringId) {
+        return given()
+                .spec(ApiConfig.getBaseSpec())
+                .when()
+                .get(ApiEndpoints.POST_BY_ID, stringId)
                 .then()
                 .extract()
                 .response();
