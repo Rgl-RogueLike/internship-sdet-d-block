@@ -164,7 +164,7 @@ public final class PostApiSteps {
     /**
      * Шаг: Фильтрация постов по статусу и поисковому тексту.
      *
-     * @param status Статус поста
+     * @param status     Статус поста
      * @param searchText Текст для поиска (заголовок или контент)
      * @return Ответ сервера
      */
@@ -183,6 +183,7 @@ public final class PostApiSteps {
 
     /**
      * Шаг: Получение списка постов с фильтрацией по статусу.
+     *
      * @param status Статус поста
      * @return Ответ сервера
      */

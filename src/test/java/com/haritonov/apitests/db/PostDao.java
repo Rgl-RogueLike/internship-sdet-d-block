@@ -135,9 +135,10 @@ public final class PostDao {
 
     /**
      * Создает тестовую запись напрямую в таблице wp_posts через JDBC.
-     * @param title Заголовок поста
+     *
+     * @param title   Заголовок поста
      * @param content Контент поста
-     * @param status Статус поста
+     * @param status  Статус поста
      * @return Сгенерированный ID созданного поста
      */
     public static int createPostDirectly(String title, String content, String status) {
@@ -154,7 +155,7 @@ public final class PostDao {
             preparedStatement.setString(4, slug);
             preparedStatement.executeUpdate();
 
-            ResultSet generatedKeys =preparedStatement.getGeneratedKeys();
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
             if (generatedKeys.next()) {
                 return generatedKeys.getInt(1);
             }
@@ -166,6 +167,7 @@ public final class PostDao {
 
     /**
      * Удаляет тестовую запись напрямую из таблицы wp_posts по ее ID.
+     *
      * @param postId ID удаляемого поста
      */
     public static void deletePostDirectly(int postId) {
