@@ -120,4 +120,15 @@ public class PostsGetTests extends BaseTest {
                 ConfigManager.getTestData().errorPostInvalidId(),
                 "Код ошибки должен быть rest_post_invalid_id");
     }
+
+    @Test(description = "TC-015: Фильтрация постов по невалидному статусу")
+    public void shouldNotFilterPostsWhenStatusInvalid() {
+        Response response = PostApiSteps.getPostsByStatus(ConfigManager.getTestData().statusInvalid());
+
+        Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_BAD_REQUEST,
+                "Статус код должен быть 400 Bad Request");
+        Assert.assertEquals(response.jsonPath().getString("code"),
+                ConfigManager.getTestData().errorInvalidParam(),
+                "Код ошибки должен быть rest_invalid_param");
+    }
 }

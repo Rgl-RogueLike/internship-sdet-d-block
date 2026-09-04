@@ -166,7 +166,7 @@ public final class PostApiSteps {
      *
      * @param status Статус поста
      * @param searchText Текст для поиска (заголовок или контент)
-     * @return Ответ сервера (Response)
+     * @return Ответ сервера
      */
     public static Response getPostsByStatusAndSearch(String status, String searchText) {
         return given()
@@ -174,6 +174,22 @@ public final class PostApiSteps {
                 .queryParam("status", status)
                 .queryParam("search", searchText)
                 .queryParam("context", ConfigManager.getTestData().contextEdit())
+                .when()
+                .get(ApiEndpoints.POSTS)
+                .then()
+                .extract()
+                .response();
+    }
+
+    /**
+     * Шаг: Получение списка постов с фильтрацией по статусу.
+     * @param status Статус поста
+     * @return Ответ сервера
+     */
+    public static Response getPostsByStatus(String status) {
+        return given()
+                .spec(ApiConfig.getBaseSpec())
+                .queryParam("status", status)
                 .when()
                 .get(ApiEndpoints.POSTS)
                 .then()
