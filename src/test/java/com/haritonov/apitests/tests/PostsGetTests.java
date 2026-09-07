@@ -12,7 +12,6 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,14 +30,10 @@ public class PostsGetTests extends BaseTest {
 
     /**
      * Предусловие: Создание тестового поста напрямую в БД перед каждым тестом.
-     * @param method Используется для динамической подстановки статуса для конкретного теста
      */
     @BeforeMethod
-    public void setupTestPost(Method method) {
+    public void setupTestPost() {
         String status = ConfigManager.getTestData().statusPublish();
-        if ("shouldFilterPostsWhenStatusIsValid".equals(method.getName())) {
-            status = ConfigManager.getTestData().statusDraft();
-        }
         testPost = PostsDbHelper.createTestPostInDb(status);
         dbCreatedPostIds.add(testPost.id());
     }
@@ -104,8 +99,10 @@ public class PostsGetTests extends BaseTest {
     @Test(description = "ТС-013: Фильтрация постов по валидному статусу")
     public void shouldFilterPostsWhenStatusIsValid() {
         String status = ConfigManager.getTestData().statusDraft();
+        PostsDbHelper.DbTestPost draftPost = PostsDbHelper.createTestPostInDb(status);
+        dbCreatedPostIds.add(draftPost.id());
 
-        Response response = PostApiSteps.getPostsByStatusAndSearch(status, testPost.title());
+        Response response = PostApiSteps.getPostsByStatusAndSearch(status, draftPost.title());
         Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_OK,
                 "Статус код должен быть 200 ОК");
         PostResponse[] foundPostsArray = response.as(PostResponse[].class);
@@ -113,7 +110,7 @@ public class PostsGetTests extends BaseTest {
 
         Assert.assertFalse(foundPosts.isEmpty(),
                 "Массив найденных постов не должен быть пустым");
-        Assert.assertEquals(foundPosts.getFirst().getId(), testPost.id(),
+        Assert.assertEquals(foundPosts.getFirst().getId(), draftPost.id(),
                 "ID первого найденного поста должен совпадать с созданным");
         Assert.assertEquals(foundPosts.getFirst().getStatus(), status,
                 "Заголовок первого найденного поста должен совпадать с созданным");
