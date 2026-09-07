@@ -9,8 +9,10 @@ import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,6 +23,25 @@ public class PostsGetTests extends BaseTest {
      * Список для хранения ID постов, созданных напрямую в БД
      */
     private final List<Integer> dbCreatedPostIds = new ArrayList<>();
+
+    /**
+     * Объект тестового поста, создаваемого в предусловии {@code @BeforeMethod}.
+     */
+    protected PostsDbHelper.DbTestPost testPost;
+
+    /**
+     * Предусловие: Создание тестового поста напрямую в БД перед каждым тестом.
+     * @param method Используется для динамической подстановки статуса для конкретного теста
+     */
+    @BeforeMethod
+    public void setupTestPost(Method method) {
+        String status = ConfigManager.getTestData().statusPublish();
+        if ("shouldFilterPostsWhenStatusIsValid".equals(method.getName())) {
+            status = ConfigManager.getTestData().statusDraft();
+        }
+        testPost = PostsDbHelper.createTestPostInDb(status);
+        dbCreatedPostIds.add(testPost.id());
+    }
 
     /**
      * Очистка тестовых данных после каждого теста.
@@ -34,9 +55,6 @@ public class PostsGetTests extends BaseTest {
 
     @Test(description = "TC-010: Получение данных поста по существующему ID")
     public void shouldGetPostWhenIdExists() {
-        PostsDbHelper.DbTestPost testPost = PostsDbHelper.createTestPostInDb(ConfigManager.getTestData().statusPublish());
-        dbCreatedPostIds.add(testPost.id());
-
         Response response = PostApiSteps.getPost(testPost.id());
         Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_OK,
                 "Статус код должен быть 200 ОК");
@@ -51,9 +69,6 @@ public class PostsGetTests extends BaseTest {
 
     @Test(description = "TC-011: Поиск постов по заголовку")
     public void shouldFindPostWhenSearchByTitle() {
-        PostsDbHelper.DbTestPost testPost = PostsDbHelper.createTestPostInDb(ConfigManager.getTestData().statusPublish());
-        dbCreatedPostIds.add(testPost.id());
-
         Response response = PostApiSteps.searchPosts(testPost.title());
 
         Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_OK,
@@ -72,9 +87,6 @@ public class PostsGetTests extends BaseTest {
 
     @Test(description = "TC-012: Поиск постов по контенту")
     public void shouldFindPostWhenSearchByContent() {
-        PostsDbHelper.DbTestPost testPost = PostsDbHelper.createTestPostInDb(ConfigManager.getTestData().statusPublish());
-        dbCreatedPostIds.add(testPost.id());
-
         Response response = PostApiSteps.searchPosts(testPost.content());
         Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_OK,
                 "Статус код должен быть 200 ОК");
@@ -92,8 +104,6 @@ public class PostsGetTests extends BaseTest {
     @Test(description = "ТС-013: Фильтрация постов по валидному статусу")
     public void shouldFilterPostsWhenStatusIsValid() {
         String status = ConfigManager.getTestData().statusDraft();
-        PostsDbHelper.DbTestPost testPost = PostsDbHelper.createTestPostInDb(status);
-        dbCreatedPostIds.add(testPost.id());
 
         Response response = PostApiSteps.getPostsByStatusAndSearch(status, testPost.title());
         Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_OK,
@@ -136,9 +146,9 @@ public class PostsGetTests extends BaseTest {
     public void shouldNotGetPostIdFormatString() {
         Response response = PostApiSteps.getPostByStringId(ConfigManager.getTestData().invalidIdFormat());
         Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_NOT_FOUND,
-                "");
+                "Статус код должен быть 404 Not Found");
         Assert.assertEquals(response.jsonPath().getString("code"),
                 ConfigManager.getTestData().errorNoRoute(),
-                "");
+                "Код ошибки должен быть rest_no_route");
     }
 }
