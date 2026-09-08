@@ -1,0 +1,3 @@
+# Yandex Disk API Config
+yandex.base.uri=https://cloud-api.yandex.net/
+yandex.token=OAuth
