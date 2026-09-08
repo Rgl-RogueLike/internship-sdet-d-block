@@ -4,8 +4,6 @@ import com.haritonov.apitests.common.BaseTest;
 import com.haritonov.apitests.yandex.dto.response.DiskResponse;
 import com.haritonov.apitests.yandex.dto.response.ErrorResponse;
 import com.haritonov.apitests.yandex.steps.DiskSteps;
-import io.restassured.response.Response;
-import org.apache.http.HttpStatus;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -16,10 +14,7 @@ public class DiskAuthTests extends BaseTest {
 
     @Test(description = "TC-001: Авторизация с валидным токеном")
     public void shouldGetDiskInfoWhenValidTokenProvided() {
-        Response response = DiskSteps.getDiskInfoWithToken();
-        Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_OK,
-                "Статус код должен быть 200 ОК");
-        DiskResponse diskResponse = response.as(DiskResponse.class);
+        DiskResponse diskResponse = DiskSteps.getDiskInfoWithToken();
         Assert.assertNotNull(diskResponse.getUser(),
                 "Объект user не должен быть null");
         Assert.assertNotNull(diskResponse.getUser().getLogin(),
@@ -34,11 +29,8 @@ public class DiskAuthTests extends BaseTest {
 
     @Test(description = "TC-002: Авторизация без токена")
     public void shouldNotGetDiskInfoWhenNoTokenProvided() {
-        Response response = DiskSteps.getDiskInfoWithoutToken();
+        ErrorResponse errorResponse = DiskSteps.getDiskInfoWithoutToken();
 
-        Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_UNAUTHORIZED,
-                "Статус код должен быть 401 UNAUTHORIZED");
-        ErrorResponse errorResponse = response.as(ErrorResponse.class);
         Assert.assertNotNull(errorResponse.getError(),
                 "Поле error не должно быть null");
         Assert.assertFalse(errorResponse.getError().isEmpty(),
