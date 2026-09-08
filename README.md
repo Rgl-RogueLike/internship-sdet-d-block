@@ -57,7 +57,7 @@ SQL-запросов.
 1. В проекте перейдите в `src/test/resources/configurations/`.
 2. Скопируйте файлы `*.properties.example` в новые файлы без `.exmple` (`wordpress.properties` и `yandex.properties`).
 3. Заполните их вашими актуальными данными (*Примечание: файлы `wordpress.properties` и `yandex.properties` добавлены в
-`.gitignore` и не попадает в Git из соображений безопасности*).:
+`.gitignore` и не попадает в Git из соображений безопасности*):
     - `wordpress.properies` - доступ к WordPress API и БД MySQL.
     - `yandex.properties` - ваш Oauth токен Яндекс.Диска.
 
@@ -73,7 +73,7 @@ mvn clean test
 
 ### Описание тест-кейсов
 
-Сьют 1: `PostsСrudTests` CRUD-операции через API
+Сьют 1: `PostsCrudTests` CRUD-операции через API
 1. `TC-001` Создание поста с валидными данными.
 2. `TC-002` Редактирование поста (изменение статуса и заголовка).
 3. `TC-003` Жесткое удаление поста (force=true).
