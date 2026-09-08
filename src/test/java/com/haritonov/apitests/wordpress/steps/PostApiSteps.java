@@ -1,10 +1,10 @@
-package com.haritonov.apitests.steps;
+package com.haritonov.apitests.wordpress.steps;
 
 import com.haritonov.apitests.config.ConfigManager;
-import com.haritonov.apitests.dto.request.PostRequest;
-import com.haritonov.apitests.dto.response.PostResponse;
-import com.haritonov.apitests.endpoints.ApiConfig;
-import com.haritonov.apitests.endpoints.ApiEndpoints;
+import com.haritonov.apitests.wordpress.dto.request.PostRequest;
+import com.haritonov.apitests.wordpress.dto.response.PostResponse;
+import com.haritonov.apitests.wordpress.endpoints.ApiConfig;
+import com.haritonov.apitests.wordpress.endpoints.ApiEndpoints;
 import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
 
@@ -200,6 +200,7 @@ public final class PostApiSteps {
 
     /**
      * Шаг: Получение данных поста по строковому значению.
+     *
      * @param stringId Строковое значение ID
      * @return Ответ сервера
      */

@@ -1,6 +1,6 @@
-package com.haritonov.apitests.utils;
+package com.haritonov.apitests.wordpress.utils;
 
-import com.haritonov.apitests.db.PostDao;
+import com.haritonov.apitests.wordpress.db.PostDao;
 
 /**
  * Хелпер для подготовки тестовых данных постов напрямую в БД.
