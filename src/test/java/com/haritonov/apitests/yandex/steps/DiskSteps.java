@@ -28,4 +28,19 @@ public final class DiskSteps {
                 .extract()
                 .response();
     }
+
+    /**
+     * Шаг: Попытка получения информации о диске без передачи токена авторизации.
+     *
+     * @return объект {@link Response} от сервера.
+     */
+    public static Response getDiskInfoWithoutToken() {
+        return given()
+                .spec(ApiConfig.getNoAuthSpec())
+                .when()
+                .get(Endpoints.DISK)
+                .then()
+                .extract()
+                .response();
+    }
 }
