@@ -2,6 +2,7 @@ package com.haritonov.apitests.yandex.tests;
 
 import com.haritonov.apitests.common.BaseTest;
 import com.haritonov.apitests.yandex.dto.response.DiskResponse;
+import com.haritonov.apitests.yandex.dto.response.ErrorResponse;
 import com.haritonov.apitests.yandex.steps.DiskSteps;
 import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
@@ -29,5 +30,26 @@ public class DiskAuthTests extends BaseTest {
                 "Поле display_name не должно быть null");
         Assert.assertFalse(diskResponse.getUser().getDisplayName().isEmpty(),
                 "Поле display_name не должно быть пустым");
+    }
+
+    @Test(description = "TC-002: Авторизация без токена")
+    public void shouldNotGetDiskInfoWhenNoTokenProvided() {
+        Response response = DiskSteps.getDiskInfoWithoutToken();
+
+        Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_UNAUTHORIZED,
+                "Статус код должен быть 401 UNAUTHORIZED");
+        ErrorResponse errorResponse = response.as(ErrorResponse.class);
+        Assert.assertNotNull(errorResponse.getError(),
+                "Поле error не должно быть null");
+        Assert.assertFalse(errorResponse.getError().isEmpty(),
+                "Поле error не должно быть пустым");
+        Assert.assertNotNull(errorResponse.getDescription(),
+                "Поле description не должно быть null");
+        Assert.assertFalse(errorResponse.getDescription().isEmpty(),
+                "Поле description не должно быть пустым");
+        Assert.assertNotNull(errorResponse.getMessage(),
+                "Поле message не должно быть null");
+        Assert.assertFalse(errorResponse.getMessage().isEmpty(),
+                "Поле message не должно быть пустым");
     }
 }
