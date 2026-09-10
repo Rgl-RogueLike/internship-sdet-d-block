@@ -1,0 +1,57 @@
+package com.haritonov.apitests.yandex.steps;
+
+import com.haritonov.apitests.yandex.dto.response.LinkResponse;
+import com.haritonov.apitests.yandex.endpoints.ApiConfig;
+import com.haritonov.apitests.yandex.endpoints.Endpoints;
+import org.apache.http.HttpStatus;
+
+import static io.restassured.RestAssured.given;
+
+/**
+ * Шаги для взаимодействия с ресурсами
+ */
+public final class ResourceSteps {
+
+    private ResourceSteps() { }
+
+    /**
+     * Шаг: Создание папки по указанному пути.
+     *
+     * @param path Путь на диске
+     * @return DTO LinkResponse со ссылкой на созданный ресурс
+     */
+    public static LinkResponse createFolder(String path) {
+        return given()
+                .spec(ApiConfig.getBaseSpec())
+                .queryParam("path" , path)
+                .when()
+                .put(Endpoints.RESOURCES)
+                .then()
+                .statusCode(HttpStatus.SC_CREATED)
+                .extract()
+                .as(LinkResponse.class);
+    }
+
+    /**
+     * Шаг: Безопасное удаление папки.
+     *
+     * @param path Путь на диске
+     */
+    public static void safeDeleteFolder(String path) {
+        given()
+                .spec(ApiConfig.getBaseSpec())
+                .queryParam("path", path)
+                .when()
+                .delete(Endpoints.TRASH_RESOURCES);
+    }
+
+    /**
+     * Шаг: Очистка корзины.
+     */
+    public static void clearTrash() {
+        given()
+                .spec(ApiConfig.getBaseSpec())
+                .when()
+                .delete(Endpoints.TRASH_RESOURCES);
+    }
+}
