@@ -37,7 +37,7 @@ public class PostsCrudTests extends BaseDbTest {
      */
     @BeforeMethod
     public void setupTestPost() {
-        PostRequest createRequest = DataGenerator.generateDefaultPostRequest(ConfigManager.getTestData().statusDraft());
+        PostRequest createRequest = DataGenerator.generateDefaultPostRequest(ConfigManager.getWpTestData().statusDraft());
         PostResponse createResponse = PostApiSteps.createPost(createRequest);
         testPostId = createResponse.getId();
         createdPostIds.add(testPostId);
@@ -61,7 +61,7 @@ public class PostsCrudTests extends BaseDbTest {
 
     @Test(description = "TC-001: Успешное создание поста с валидными данными")
     public void shouldCreatePostWhenValidDataProvided() {
-        PostRequest request = DataGenerator.generateDefaultPostRequest(ConfigManager.getTestData().statusDraft());
+        PostRequest request = DataGenerator.generateDefaultPostRequest(ConfigManager.getWpTestData().statusDraft());
         PostResponse response = PostApiSteps.createPost(request);
         createdPostIds.add(response.getId());
 
@@ -85,7 +85,7 @@ public class PostsCrudTests extends BaseDbTest {
     public void shouldUpdatePostWhenNewTitleAndStatusSent() {
         PostRequest updateRequest = PostRequest.builder()
                 .title(DataGenerator.generatePostTitle())
-                .status(ConfigManager.getTestData().statusPublish())
+                .status(ConfigManager.getWpTestData().statusPublish())
                 .build();
         PostResponse updateResponse = PostApiSteps.updatePost(testPostId, updateRequest);
 
@@ -126,14 +126,14 @@ public class PostsCrudTests extends BaseDbTest {
 
         Assert.assertTrue(response.getId() > 0,
                 "ID поста должен быть больше 0");
-        Assert.assertEquals(response.getStatus(), ConfigManager.getTestData().statusDraft(),
+        Assert.assertEquals(response.getStatus(), ConfigManager.getWpTestData().statusDraft(),
                 "Статус по умолчанию должен быть 'draft'");
         Assert.assertEquals(response.getTitle().getRaw(), uniqueTitle,
                 "Заголовок в ответе API должен совпадать с отправленным");
         Assert.assertEquals(response.getContent().getRaw(), "",
                 "Контент по умолчанию должен быть пустой строкой");
 
-        Assert.assertEquals(PostDao.getPostStatusById(response.getId()), ConfigManager.getTestData().statusDraft(),
+        Assert.assertEquals(PostDao.getPostStatusById(response.getId()), ConfigManager.getWpTestData().statusDraft(),
                 "Статус в БД по умолчанию должен быть 'draft'");
         Assert.assertEquals(PostDao.getPostTitleById(response.getId()), uniqueTitle,
                 "Заголовок в БД должен совпадать с отправленным");
@@ -151,13 +151,13 @@ public class PostsCrudTests extends BaseDbTest {
         Assert.assertEquals(deleteResponse.jsonPath().getInt("id"), testPostId,
                 "ID в ответе должен совпадать с удаляемым постом");
         Assert.assertEquals(deleteResponse.jsonPath().getString("status"),
-                ConfigManager.getTestData().statusTrash(),
+                ConfigManager.getWpTestData().statusTrash(),
                 "Статус в ответе API должен быть 'trash'");
 
         Assert.assertTrue(PostDao.isPostExists(testPostId),
                 "Пост должен физически оставаться в БД после перемещения в корзину");
         Assert.assertEquals(PostDao.getPostStatusById(testPostId),
-                ConfigManager.getTestData().statusTrash(),
+                ConfigManager.getWpTestData().statusTrash(),
                 "Статус поста в БД должен быть изменен на 'trash'");
     }
 
@@ -166,14 +166,14 @@ public class PostsCrudTests extends BaseDbTest {
         String uniqueTitle = DataGenerator.generatePostTitle();
         PostRequest request = PostRequest.builder()
                 .title(uniqueTitle)
-                .status(ConfigManager.getTestData().statusInvalid())
+                .status(ConfigManager.getWpTestData().statusInvalid())
                 .build();
         Response response = PostApiSteps.attemptToCreatePost(request);
 
         Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_BAD_REQUEST,
                 "Статус код должен быть 400 Bad Request");
         Assert.assertEquals(response.jsonPath().getString("code"),
-                ConfigManager.getTestData().errorInvalidParam(),
+                ConfigManager.getWpTestData().errorInvalidParam(),
                 "Код ошибки должен быть rest_invalid_param");
 
         Assert.assertEquals(PostDao.getPostCountByTitle(uniqueTitle), 0,
@@ -191,7 +191,7 @@ public class PostsCrudTests extends BaseDbTest {
         Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_NOT_FOUND,
                 "Статус код должен быть 404 Not Found");
         Assert.assertEquals(response.jsonPath().getString("code"),
-                ConfigManager.getTestData().errorPostInvalidId(),
+                ConfigManager.getWpTestData().errorPostInvalidId(),
                 "Код ошибки должен быть rest_post_invalid_id");
 
         Assert.assertFalse(PostDao.isPostExists(invalidPostId),
@@ -206,7 +206,7 @@ public class PostsCrudTests extends BaseDbTest {
         Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_NOT_FOUND,
                 "Статус код должен быть 404 Not Found");
         Assert.assertEquals(response.jsonPath().getString("code"),
-                ConfigManager.getTestData().errorPostInvalidId(),
+                ConfigManager.getWpTestData().errorPostInvalidId(),
                 "Код ошибки должен быть rest_post_invalid_id");
 
         Assert.assertFalse(PostDao.isPostExists(invalidPostId),
@@ -215,16 +215,16 @@ public class PostsCrudTests extends BaseDbTest {
 
     @Test(description = "TC-009: Негативный - обновление поста с невалидным статусом")
     public void shouldNotUpdatePostWhenStatusInvalid() {
-        String initialStatus = ConfigManager.getTestData().statusDraft();
+        String initialStatus = ConfigManager.getWpTestData().statusDraft();
         PostRequest updateRequest = PostRequest.builder()
-                .status(ConfigManager.getTestData().statusInvalid())
+                .status(ConfigManager.getWpTestData().statusInvalid())
                 .build();
         Response response = PostApiSteps.attemptToUpdatePost(testPostId, updateRequest);
 
         Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_BAD_REQUEST,
                 "Статус код должен быть 400 Bad Request");
         Assert.assertEquals(response.jsonPath().getString("code"),
-                ConfigManager.getTestData().errorInvalidParam(),
+                ConfigManager.getWpTestData().errorInvalidParam(),
                 "Код ошибки должен быть rest_invalid_param");
 
         Assert.assertEquals(PostDao.getPostStatusById(testPostId), initialStatus,
