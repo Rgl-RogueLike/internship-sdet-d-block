@@ -34,4 +34,10 @@ public interface YandexTestData extends Config {
      */
     @Key("non.existent.parent")
     String nonExistentParent();
+
+    /**
+     * Код ошибки API при невалидном или пустом значении обязательного параметра.
+     */
+    @Key("error.field.validation")
+    String errorFieldValidation();
 }

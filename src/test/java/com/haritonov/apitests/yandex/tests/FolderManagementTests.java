@@ -7,6 +7,7 @@ import com.haritonov.apitests.yandex.steps.ResourceSteps;
 import com.haritonov.apitests.yandex.utils.DataGenerator;
 import io.restassured.http.Method;
 import io.restassured.response.Response;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
@@ -62,5 +63,15 @@ public class FolderManagementTests {
         ErrorResponse errorResponse = response.as(ErrorResponse.class);
         Assert.assertEquals(errorResponse.getError(), ConfigManager.getYandexTestData().errorPathDoesntExist(),
                 "Код ошибки должен быть DiskPathDoesntExistsError");
+    }
+
+    @Test(description = "TC-004: Запрос с пустым значением параметра path")
+    public void shouldNotCreateFolderWhenPathIsEmpty() {
+        Response response = ResourceSteps.attemptToCreateFolder(StringUtils.EMPTY);
+        Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_BAD_REQUEST,
+                "Статус код должен быть 400 Bad Request");
+        ErrorResponse errorResponse = response.as(ErrorResponse.class);
+        Assert.assertEquals(errorResponse.getError(), ConfigManager.getYandexTestData().errorFieldValidation(),
+                "Код ошибки должен быть FieldValidationError");
     }
 }
