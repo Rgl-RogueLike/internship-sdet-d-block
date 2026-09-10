@@ -73,4 +73,14 @@ public final class ResourceSteps {
                 .extract()
                 .response();
     }
+
+    public static Response attemptToCreateFolderWithoutPathParam() {
+        return given()
+                .spec(ApiConfig.getBaseSpec())
+                .when()
+                .put(Endpoints.RESOURCES)
+                .then()
+                .extract()
+                .response();
+    }
 }

@@ -74,4 +74,14 @@ public class FolderManagementTests {
         Assert.assertEquals(errorResponse.getError(), ConfigManager.getYandexTestData().errorFieldValidation(),
                 "Код ошибки должен быть FieldValidationError");
     }
+
+    @Test(description = "TC-005: Запрос без параметра path")
+    public void shouldNotCreateFolderWhenPathParamMissing() {
+        Response response = ResourceSteps.attemptToCreateFolderWithoutPathParam();
+        Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_BAD_REQUEST,
+                "Статус код должен быть 400 Bad Request");
+        ErrorResponse errorResponse = response.as(ErrorResponse.class);
+        Assert.assertEquals(errorResponse.getError(), ConfigManager.getYandexTestData().errorFieldValidation(),
+                "Код ошибки должен быть FieldValidationError");
+    }
 }
