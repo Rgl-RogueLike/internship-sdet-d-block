@@ -1,11 +1,11 @@
-package com.haritonov.apitests.tests;
+package com.haritonov.apitests.wordpress.tests;
 
 import com.haritonov.apitests.config.ConfigManager;
-import com.haritonov.apitests.db.PostDao;
-import com.haritonov.apitests.dto.request.PostRequest;
-import com.haritonov.apitests.dto.response.PostResponse;
-import com.haritonov.apitests.steps.PostApiSteps;
-import com.haritonov.apitests.utils.DataGenerator;
+import com.haritonov.apitests.wordpress.db.PostDao;
+import com.haritonov.apitests.wordpress.dto.request.PostRequest;
+import com.haritonov.apitests.wordpress.dto.response.PostResponse;
+import com.haritonov.apitests.wordpress.steps.PostApiSteps;
+import com.haritonov.apitests.wordpress.utils.DataGenerator;
 import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
 import org.testng.Assert;
@@ -16,7 +16,7 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PostsCrudTests extends BaseTest {
+public class PostsCrudTests extends BaseDbTest {
 
     /**
      * Список для хранения ID созданных постов в рамках одного теста

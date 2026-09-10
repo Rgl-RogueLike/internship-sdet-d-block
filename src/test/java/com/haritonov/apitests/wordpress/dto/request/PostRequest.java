@@ -1,4 +1,4 @@
-package com.haritonov.apitests.dto.request;
+package com.haritonov.apitests.wordpress.dto.request;
 
 import lombok.Builder;
 import lombok.Data;

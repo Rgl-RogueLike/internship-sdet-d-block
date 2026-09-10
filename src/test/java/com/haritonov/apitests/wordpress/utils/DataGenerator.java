@@ -1,8 +1,8 @@
-package com.haritonov.apitests.utils;
+package com.haritonov.apitests.wordpress.utils;
 
 import com.github.javafaker.Faker;
 import com.haritonov.apitests.config.ConfigManager;
-import com.haritonov.apitests.dto.request.PostRequest;
+import com.haritonov.apitests.wordpress.dto.request.PostRequest;
 
 /**
  * Утилитный класс для генерации случайных тестовых данных.

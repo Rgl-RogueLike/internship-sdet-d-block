@@ -1,7 +1,7 @@
-package com.haritonov.apitests.db;
+package com.haritonov.apitests.wordpress.db;
 
 import com.haritonov.apitests.config.ConfigManager;
-import com.haritonov.apitests.config.Configuration;
+import com.haritonov.apitests.wordpress.config.WordPressConfig;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -27,7 +27,7 @@ public final class DbConnection {
     public static Connection getConnection() {
         try {
             if (connection == null || connection.isClosed()) {
-                Configuration config = ConfigManager.getConfig();
+                WordPressConfig config = ConfigManager.getWpConfig();
                 connection = DriverManager.getConnection(
                         config.dbUrl(),
                         config.dbUser(),

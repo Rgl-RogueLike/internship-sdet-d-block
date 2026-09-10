@@ -1,5 +1,7 @@
 package com.haritonov.apitests.config;
 
+import com.haritonov.apitests.wordpress.config.WordPressConfig;
+import com.haritonov.apitests.yandex.config.YandexConfig;
 import org.aeonbits.owner.ConfigFactory;
 
 
@@ -7,12 +9,13 @@ import org.aeonbits.owner.ConfigFactory;
  * Менеджер конфигураций.
  * <p>
  * Отвечает за инициализацию и предоставление доступа к интерфейсам конфигурации
- * ({@link Configuration} и {@link TestData}) с использованием библиотеки Owner.
+ * ({@link WordPressConfig} и {@link TestData}) с использованием библиотеки Owner.
  * Реализован как утилитный класс с приватным конструктором.
  */
 public final class ConfigManager {
 
-    private static final Configuration CONFIG = ConfigFactory.create(Configuration.class);
+    private static final WordPressConfig WP_CONFIG = ConfigFactory.create(WordPressConfig.class);
+    private static final YandexConfig YANDEX_CONFIG = ConfigFactory.create(YandexConfig.class);
     private static final TestData TEST_DATA = ConfigFactory.create(TestData.class);
 
     private ConfigManager() {
@@ -22,10 +25,19 @@ public final class ConfigManager {
     /**
      * Возвращает экземпляр конфигурации окружения (URL, credential).
      *
-     * @return объект {@link Configuration}
+     * @return объект {@link WordPressConfig}
      */
-    public static Configuration getConfig() {
-        return CONFIG;
+    public static WordPressConfig getWpConfig() {
+        return WP_CONFIG;
+    }
+
+    /**
+     * Возвращает экземпляр конфигурации окружения (URL, credential).
+     *
+     * @return объект {@link YandexConfig}
+     */
+    public static YandexConfig getYandexConfig() {
+        return YANDEX_CONFIG;
     }
 
     /**

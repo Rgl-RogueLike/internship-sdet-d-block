@@ -1,7 +1,7 @@
-package com.haritonov.apitests.endpoints;
+package com.haritonov.apitests.wordpress.endpoints;
 
 import com.haritonov.apitests.config.ConfigManager;
-import com.haritonov.apitests.config.Configuration;
+import com.haritonov.apitests.wordpress.config.WordPressConfig;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
@@ -25,7 +25,7 @@ public class ApiConfig {
      * @return объект {@link RequestSpecification}
      */
     public static RequestSpecification getBaseSpec() {
-        Configuration config = ConfigManager.getConfig();
+        WordPressConfig config = ConfigManager.getWpConfig();
 
         return new RequestSpecBuilder()
                 .setBaseUri(config.baseUri())

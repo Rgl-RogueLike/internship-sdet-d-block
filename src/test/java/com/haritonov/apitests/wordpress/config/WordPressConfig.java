@@ -1,16 +1,9 @@
-package com.haritonov.apitests.config;
+package com.haritonov.apitests.wordpress.config;
 
 import org.aeonbits.owner.Config;
 
-/**
- * Интерфейс конфигурации окружения.
- * <p>
- * Связывает свойства из файла {@code config.properties} с методами Java.
- * Содержит настройки подключения к API и базе данных WordPress.
- */
-@Config.Sources("classpath:configurations/config.properties")
-public interface Configuration extends Config {
-
+@Config.Sources("classpath:configurations/wordpress.properties")
+public interface WordPressConfig extends Config {
     /**
      * Базовый URI тестируемого стенда.
      */

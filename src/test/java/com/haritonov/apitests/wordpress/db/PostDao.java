@@ -1,4 +1,4 @@
-package com.haritonov.apitests.db;
+package com.haritonov.apitests.wordpress.db;
 
 import com.haritonov.apitests.config.ConfigManager;
 

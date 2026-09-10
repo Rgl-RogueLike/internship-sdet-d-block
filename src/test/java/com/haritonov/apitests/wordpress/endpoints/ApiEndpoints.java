@@ -1,4 +1,4 @@
-package com.haritonov.apitests.endpoints;
+package com.haritonov.apitests.wordpress.endpoints;
 
 /**
  * Класс-хранилище констант эндпоинтов WordPress REST API.
