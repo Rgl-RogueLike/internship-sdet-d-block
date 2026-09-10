@@ -3,6 +3,7 @@ package com.haritonov.apitests.yandex.steps;
 import com.haritonov.apitests.yandex.dto.response.LinkResponse;
 import com.haritonov.apitests.yandex.endpoints.ApiConfig;
 import com.haritonov.apitests.yandex.endpoints.Endpoints;
+import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
 
 import static io.restassured.RestAssured.given;
@@ -53,5 +54,23 @@ public final class ResourceSteps {
                 .spec(ApiConfig.getBaseSpec())
                 .when()
                 .delete(Endpoints.TRASH_RESOURCES);
+    }
+
+    /**
+     * Шаг: Попытка создания папки без проверки статус-кода.
+     * Используется для негативных тестов, где ожидается ошибка (4хх).
+     *
+     * @param path Путь на диске
+     * @return Ответ от сервера
+     */
+    public static Response attemptToCreateFolder(String path) {
+        return given()
+                .spec(ApiConfig.getBaseSpec())
+                .queryParam("path", path)
+                .when()
+                .put(Endpoints.RESOURCES)
+                .then()
+                .extract()
+                .response();
     }
 }

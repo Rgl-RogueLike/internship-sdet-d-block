@@ -7,4 +7,7 @@ public interface YandexTestData extends Config {
 
     @Key("test.folder.prefix")
     String testFolderPrefix();
+
+    @Key("error.existent.directory")
+    String errorExistentDirectory();
 }
