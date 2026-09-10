@@ -52,4 +52,15 @@ public class FolderManagementTests {
         Assert.assertEquals(errorResponse.getError(), ConfigManager.getYandexTestData().errorExistentDirectory(),
                 "Код ошибки должен быть DiskPathPointsToExistentDirectoryError");
     }
+
+    @Test(description = "TC-003: Создание папки по несуществующему пути")
+    public void shouldNotCreateFolderWhenParentPathDoesNotExist() {
+        String invalidPath = DataGenerator.generatePathWithNonExistentParent();
+        Response response = ResourceSteps.attemptToCreateFolder(invalidPath);
+        Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_CONFLICT,
+                "Статус код должен быть 409 Conflict");
+        ErrorResponse errorResponse = response.as(ErrorResponse.class);
+        Assert.assertEquals(errorResponse.getError(), ConfigManager.getYandexTestData().errorPathDoesntExist(),
+                "Код ошибки должен быть DiskPathDoesntExistsError");
+    }
 }

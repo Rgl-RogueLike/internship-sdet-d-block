@@ -17,4 +17,10 @@ public final class DataGenerator {
         String folderPrefix = ConfigManager.getYandexTestData().testFolderPrefix();
         return folderPrefix + System.currentTimeMillis();
     }
+
+    public static String generatePathWithNonExistentParent() {
+        String parent = ConfigManager.getYandexTestData().nonExistentParent();
+        String folderPrefix = ConfigManager.getYandexTestData().testFolderPrefix();
+        return parent + "/" + folderPrefix + System.currentTimeMillis();
+    }
 }
