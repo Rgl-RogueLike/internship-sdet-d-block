@@ -1,7 +1,6 @@
 package com.haritonov.apitests.yandex.config;
 
 import org.aeonbits.owner.Config;
-import org.testng.annotations.Test;
 
 /**
  * Интерфейс тестовых данных для API Яндекс.Диска.

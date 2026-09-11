@@ -7,10 +7,12 @@ import com.haritonov.apitests.config.ConfigManager;
  */
 public final class DataGenerator {
 
-    private DataGenerator() { }
+    private DataGenerator() {
+    }
 
     /**
      * Генерирует уникальный путь для папки на Диске.
+     *
      * @return строка вида "disk:/test_folder_123456789"
      */
     public static String generateUniqueFolderPath() {
@@ -21,6 +23,7 @@ public final class DataGenerator {
 
     /**
      * Генерирует несуществующий путь на Диске.
+     *
      * @return строка вида "non_existent_folder/test_folder_123456789"
      */
     public static String generatePathWithNonExistentParent() {

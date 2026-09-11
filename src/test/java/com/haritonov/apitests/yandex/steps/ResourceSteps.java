@@ -18,7 +18,8 @@ import static io.restassured.RestAssured.given;
  */
 public final class ResourceSteps {
 
-    private ResourceSteps() { }
+    private ResourceSteps() {
+    }
 
     /**
      * Шаг: Создание папки по указанному пути.
@@ -29,7 +30,7 @@ public final class ResourceSteps {
     public static LinkResponse createFolder(String path) {
         return given()
                 .spec(ApiConfig.getBaseSpec())
-                .queryParam("path" , path)
+                .queryParam("path", path)
                 .when()
                 .put(Endpoints.RESOURCES)
                 .then()
@@ -122,14 +123,14 @@ public final class ResourceSteps {
      * @return Ответ сервера
      */
     public static Response getFolderInfoResponse(String path) {
-       return given()
-               .spec(ApiConfig.getBaseSpec())
-               .queryParam("path", path)
-               .when()
-               .get(Endpoints.RESOURCES)
-               .then()
-               .extract()
-               .response();
+        return given()
+                .spec(ApiConfig.getBaseSpec())
+                .queryParam("path", path)
+                .when()
+                .get(Endpoints.RESOURCES)
+                .then()
+                .extract()
+                .response();
     }
 
     /**
