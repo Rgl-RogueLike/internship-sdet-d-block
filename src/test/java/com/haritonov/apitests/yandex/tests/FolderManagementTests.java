@@ -107,4 +107,14 @@ public class FolderManagementTests {
         Assert.assertEquals(errorResponse.getError(), ConfigManager.getYandexTestData().errorNotFound(),
                 "Код ошибки должен быть DiskNotFoundError");
     }
+
+    @Test(description = "TC-008: Удаление папки с пустым значением параметра path")
+    public void shouldNotDeleteFolderWhenPathIsEmpty() {
+        Response response = ResourceSteps.attemptToDeleteFolder(StringUtils.EMPTY);
+        Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_BAD_REQUEST,
+                "Статус код должен быть 400 Bad Request");
+        ErrorResponse errorResponse = response.as(ErrorResponse.class);
+        Assert.assertEquals(errorResponse.getError(), ConfigManager.getYandexTestData().errorFieldValidation(),
+                "Код ошибки должен быть FieldValidationError");
+    }
 }
