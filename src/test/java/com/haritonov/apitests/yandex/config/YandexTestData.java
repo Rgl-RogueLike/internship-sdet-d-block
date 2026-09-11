@@ -40,4 +40,10 @@ public interface YandexTestData extends Config {
      */
     @Key("error.field.validation")
     String errorFieldValidation();
+
+    /**
+     * Код ошибки API при запросе к несуществующему ресурсу.
+     */
+    @Key("error.not.found")
+    String errorNotFound();
 }

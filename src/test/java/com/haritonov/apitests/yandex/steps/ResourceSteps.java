@@ -124,4 +124,22 @@ public final class ResourceSteps {
                .extract()
                .response();
     }
+
+    /**
+     * Шаг: Попытка удаления папки без проверки статус-кода.
+     * Используется для негативных тестов, где ожидается ошибка
+     *
+     * @param path Путь на диске
+     * @return Ответ от сервера
+     */
+    public static Response attemptToDeleteFolder(String path) {
+        return given()
+                .spec(ApiConfig.getBaseSpec())
+                .queryParam("path", path)
+                .when()
+                .delete(Endpoints.RESOURCES)
+                .then()
+                .extract()
+                .response();
+    }
 }

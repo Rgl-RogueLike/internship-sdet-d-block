@@ -85,7 +85,7 @@ public class FolderManagementTests {
                 "Код ошибки должен быть FieldValidationError");
     }
 
-    @Test(description = "TC-006 Успешное удаление папки")
+    @Test(description = "TC-006: Успешное удаление папки")
     public void shouldDeleteFolderWhenItExists() {
         testFolderPath = DataGenerator.generateUniqueFolderPath();
         ResourceSteps.createFolder(testFolderPath);
@@ -95,5 +95,16 @@ public class FolderManagementTests {
         Response getResponse = ResourceSteps.getFolderInfoResponse(testFolderPath);
         Assert.assertEquals(getResponse.getStatusCode(), HttpStatus.SC_NOT_FOUND,
                 "Статус код должен быть 404 Not Found");
+    }
+
+    @Test(description = "TC-007: Удаление несуществующей папки")
+    public void shouldNotDeleteFolderWhenItDoesNotExist() {
+        String nonExistentPath = DataGenerator.generateUniqueFolderPath();
+        Response response = ResourceSteps.attemptToDeleteFolder(nonExistentPath);
+        Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_NOT_FOUND,
+                "Статус код должен быть 404 Not Found");
+        ErrorResponse errorResponse = response.as(ErrorResponse.class);
+        Assert.assertEquals(errorResponse.getError(), ConfigManager.getYandexTestData().errorNotFound(),
+                "Код ошибки должен быть DiskNotFoundError");
     }
 }
