@@ -13,6 +13,9 @@ import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+
 /**
  * Сьют тестов: Управление папками в Яндекс.Диске.
  */
@@ -166,5 +169,27 @@ public class FolderManagementTests {
         ErrorResponse errorResponse = response.as(ErrorResponse.class);
         Assert.assertEquals(errorResponse.getError(), ConfigManager.getYandexTestData().errorFieldValidation(),
                 "Код ошибки должен быть FieldValidationError");
+    }
+
+    @Test(description = "TC-013: Конфликт при восстановлении папки (когда путь на Диске уже занят)")
+    public void shouldRestoreFolderWithSuffixWhenPathIsOccupied() {
+        ResourceSteps.clearTrash();
+        testFolderPath = DataGenerator.generateUniqueFolderPath();
+        ResourceSteps.createFolder(testFolderPath);
+        ResourceSteps.deleteFolder(testFolderPath);
+        ResourceSteps.createFolder(testFolderPath);
+
+        String trashedPath = ResourceSteps.findTrashedFolderPathByOrigin(testFolderPath);
+        Assert.assertNotNull(trashedPath, "Путь удаленной папки в корзине не должен быть null");
+
+        LinkResponse restoreResponse = ResourceSteps.restoreFolderFromTrash(trashedPath);
+
+        String expectedSuffix = ConfigManager.getYandexTestData().conflictSuffix();
+        String decodedHref = URLDecoder.decode(restoreResponse.getHref(), StandardCharsets.UTF_8);
+
+        Assert.assertTrue(decodedHref.contains(expectedSuffix),
+                "Ссылка в ответе должна содержать суффикс " + expectedSuffix + ", так как оригинальное имя занято");
+
+        ResourceSteps.safeDeleteFolder(testFolderPath + " " + expectedSuffix);
     }
 }

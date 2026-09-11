@@ -1,6 +1,7 @@
 package com.haritonov.apitests.yandex.config;
 
 import org.aeonbits.owner.Config;
+import org.testng.annotations.Test;
 
 /**
  * Интерфейс тестовых данных для API Яндекс.Диска.
@@ -52,4 +53,10 @@ public interface YandexTestData extends Config {
      */
     @Key("disk.path.prefix")
     String diskPrefix();
+
+    /**
+     * Суффикс, добавляемый к имени ресурса при восстановлении, если оригинальное имя уже занято
+     */
+    @Key("conflict.suffix")
+    String conflictSuffix();
 }
