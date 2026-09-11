@@ -84,4 +84,16 @@ public class FolderManagementTests {
         Assert.assertEquals(errorResponse.getError(), ConfigManager.getYandexTestData().errorFieldValidation(),
                 "Код ошибки должен быть FieldValidationError");
     }
+
+    @Test(description = "TC-006 Успешное удаление папки")
+    public void shouldDeleteFolderWhenItExists() {
+        testFolderPath = DataGenerator.generateUniqueFolderPath();
+        ResourceSteps.createFolder(testFolderPath);
+
+        ResourceSteps.deleteFolder(testFolderPath);
+
+        Response getResponse = ResourceSteps.getFolderInfoResponse(testFolderPath);
+        Assert.assertEquals(getResponse.getStatusCode(), HttpStatus.SC_NOT_FOUND,
+                "Статус код должен быть 404 Not Found");
+    }
 }

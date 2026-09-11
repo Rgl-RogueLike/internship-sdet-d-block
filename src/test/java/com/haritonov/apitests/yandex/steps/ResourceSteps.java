@@ -43,7 +43,10 @@ public final class ResourceSteps {
                 .spec(ApiConfig.getBaseSpec())
                 .queryParam("path", path)
                 .when()
-                .delete(Endpoints.TRASH_RESOURCES);
+                .delete(Endpoints.RESOURCES)
+                .then()
+                .extract()
+                .response();
     }
 
     /**
@@ -74,6 +77,11 @@ public final class ResourceSteps {
                 .response();
     }
 
+    /**
+     * Шаг: Попытка создания папки без передачи параметра path.
+     *
+     * @return Ответ сервера
+     */
     public static Response attemptToCreateFolderWithoutPathParam() {
         return given()
                 .spec(ApiConfig.getBaseSpec())
@@ -82,5 +90,38 @@ public final class ResourceSteps {
                 .then()
                 .extract()
                 .response();
+    }
+
+    /**
+     * Шаг: Удаление папки по указанному пути (с проверкой статус-кода 204).
+     *
+     * @param path Путь на диске
+     */
+    public static void deleteFolder(String path) {
+        given()
+                .spec(ApiConfig.getBaseSpec())
+                .queryParam("path", path)
+                .when()
+                .delete(Endpoints.RESOURCES)
+                .then()
+                .statusCode(HttpStatus.SC_NO_CONTENT);
+    }
+
+    /**
+     * Шаг: Получение информации о ресурсе без проверки статус-кода.
+     * Используется для проверки существования папки.
+     *
+     * @param path Путь на диске
+     * @return Ответ сервера
+     */
+    public static Response getFolderInfoResponse(String path) {
+       return given()
+               .spec(ApiConfig.getBaseSpec())
+               .queryParam("path", path)
+               .when()
+               .get(Endpoints.RESOURCES)
+               .then()
+               .extract()
+               .response();
     }
 }
