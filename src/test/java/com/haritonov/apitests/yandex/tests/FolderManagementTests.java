@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.net.URLDecoder;
@@ -23,21 +24,24 @@ public class FolderManagementTests {
 
     private String testFolderPath;
 
+    @BeforeMethod
+    public void setUp() {
+        ResourceSteps.clearTrash();
+        testFolderPath = DataGenerator.generateUniqueFolderPath();
+    }
+
     /**
      * Постусловие: Очистка тестовых данных после каждого теста.
      * Удаляет папку с Диска и очищает корзину.
      */
     @AfterMethod
     public void cleanUpYandexDisk() {
-        if (testFolderPath != null) {
-            ResourceSteps.safeDeleteFolder(testFolderPath);
-        }
+        ResourceSteps.safeDeleteFolder(testFolderPath);
         ResourceSteps.clearTrash();
     }
 
     @Test(description = "ТС-001: Успешное создание папки")
     public void shouldCreateFolderWhenValidProvided() {
-        testFolderPath = DataGenerator.generateUniqueFolderPath();
         LinkResponse response = ResourceSteps.createFolder(testFolderPath);
 
         Assert.assertNotNull(response.getHref(), "Поле href не должно быть null");
@@ -47,9 +51,9 @@ public class FolderManagementTests {
 
     @Test(description = "TC-002: Создание папки по уже существующему пути")
     public void shouldNotCreateFolderWhenPathAlreadyExists() {
-        testFolderPath = DataGenerator.generateUniqueFolderPath();
         ResourceSteps.createFolder(testFolderPath);
         Response response = ResourceSteps.attemptToCreateFolder(testFolderPath);
+
         Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_CONFLICT,
                 "Статус должен быть 409 Conflict");
         ErrorResponse errorResponse = response.as(ErrorResponse.class);
@@ -61,6 +65,7 @@ public class FolderManagementTests {
     public void shouldNotCreateFolderWhenParentPathDoesNotExist() {
         String invalidPath = DataGenerator.generatePathWithNonExistentParent();
         Response response = ResourceSteps.attemptToCreateFolder(invalidPath);
+
         Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_CONFLICT,
                 "Статус код должен быть 409 Conflict");
         ErrorResponse errorResponse = response.as(ErrorResponse.class);
@@ -71,6 +76,7 @@ public class FolderManagementTests {
     @Test(description = "TC-004: Запрос с пустым значением параметра path")
     public void shouldNotCreateFolderWhenPathIsEmpty() {
         Response response = ResourceSteps.attemptToCreateFolder(StringUtils.EMPTY);
+
         Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_BAD_REQUEST,
                 "Статус код должен быть 400 Bad Request");
         ErrorResponse errorResponse = response.as(ErrorResponse.class);
@@ -81,6 +87,7 @@ public class FolderManagementTests {
     @Test(description = "TC-005: Запрос без параметра path")
     public void shouldNotCreateFolderWhenPathParamMissing() {
         Response response = ResourceSteps.attemptToCreateFolderWithoutPathParam();
+
         Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_BAD_REQUEST,
                 "Статус код должен быть 400 Bad Request");
         ErrorResponse errorResponse = response.as(ErrorResponse.class);
@@ -90,12 +97,10 @@ public class FolderManagementTests {
 
     @Test(description = "TC-006: Успешное удаление папки")
     public void shouldDeleteFolderWhenItExists() {
-        testFolderPath = DataGenerator.generateUniqueFolderPath();
         ResourceSteps.createFolder(testFolderPath);
-
         ResourceSteps.deleteFolder(testFolderPath);
-
         Response getResponse = ResourceSteps.getFolderInfoResponse(testFolderPath);
+
         Assert.assertEquals(getResponse.getStatusCode(), HttpStatus.SC_NOT_FOUND,
                 "Статус код должен быть 404 Not Found");
     }
@@ -104,6 +109,7 @@ public class FolderManagementTests {
     public void shouldNotDeleteFolderWhenItDoesNotExist() {
         String nonExistentPath = DataGenerator.generateUniqueFolderPath();
         Response response = ResourceSteps.attemptToDeleteFolder(nonExistentPath);
+
         Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_NOT_FOUND,
                 "Статус код должен быть 404 Not Found");
         ErrorResponse errorResponse = response.as(ErrorResponse.class);
@@ -114,6 +120,7 @@ public class FolderManagementTests {
     @Test(description = "TC-008: Удаление папки с пустым значением параметра path")
     public void shouldNotDeleteFolderWhenPathIsEmpty() {
         Response response = ResourceSteps.attemptToDeleteFolder(StringUtils.EMPTY);
+
         Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_BAD_REQUEST,
                 "Статус код должен быть 400 Bad Request");
         ErrorResponse errorResponse = response.as(ErrorResponse.class);
@@ -123,10 +130,10 @@ public class FolderManagementTests {
 
     @Test(description = "TC-009: Удаление уже удаленной папки (которая лежит в корзине)")
     public void shouldNotDeleteFolderWhenItIsAlreadyInTrash() {
-        testFolderPath = DataGenerator.generateUniqueFolderPath();
         ResourceSteps.createFolder(testFolderPath);
         ResourceSteps.deleteFolder(testFolderPath);
         Response response = ResourceSteps.attemptToDeleteFolder(testFolderPath);
+
         Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_NOT_FOUND,
                 "Статус код должен быть 404 Not Found");
         ErrorResponse errorResponse = response.as(ErrorResponse.class);
@@ -136,8 +143,6 @@ public class FolderManagementTests {
 
     @Test(description = "TC-010: Успешное восстановление папки из корзины")
     public void shouldRestoreFolderFromTrashSuccessfully() {
-        ResourceSteps.clearTrash();
-        testFolderPath = DataGenerator.generateUniqueFolderPath();
         ResourceSteps.createFolder(testFolderPath);
         ResourceSteps.deleteFolder(testFolderPath);
 
@@ -154,6 +159,7 @@ public class FolderManagementTests {
     public void shouldNotRestoreFolderWhenItDoesNotExistInTrash() {
         String nonExistentTrashPath = DataGenerator.generatePathWithNonExistentParent();
         Response response = ResourceSteps.attemptToRestoreFolderFromTrash(nonExistentTrashPath);
+
         Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_NOT_FOUND,
                 "Статус код должен быть 404 Not Found");
         ErrorResponse errorResponse = response.as(ErrorResponse.class);
@@ -164,6 +170,7 @@ public class FolderManagementTests {
     @Test(description = "TC-012: Восстановление папки с пустым значением параметра path")
     public void shouldRestoreFolderWhenPathIsEmpty() {
         Response response = ResourceSteps.attemptToRestoreFolderFromTrash(StringUtils.EMPTY);
+
         Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_BAD_REQUEST,
                 "Статус код должен быть 404 Bad Request");
         ErrorResponse errorResponse = response.as(ErrorResponse.class);
@@ -173,8 +180,6 @@ public class FolderManagementTests {
 
     @Test(description = "TC-013: Конфликт при восстановлении папки (когда путь на Диске уже занят)")
     public void shouldRestoreFolderWithSuffixWhenPathIsOccupied() {
-        ResourceSteps.clearTrash();
-        testFolderPath = DataGenerator.generateUniqueFolderPath();
         ResourceSteps.createFolder(testFolderPath);
         ResourceSteps.deleteFolder(testFolderPath);
         ResourceSteps.createFolder(testFolderPath);
