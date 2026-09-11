@@ -146,4 +146,15 @@ public class FolderManagementTests {
         Assert.assertEquals(getResponse.getStatusCode(), HttpStatus.SC_OK,
                 "Статус код должен быть 200 ОК");
     }
+
+    @Test(description = "TC-011: Восстановление несуществующей папки из корзины")
+    public void shouldNotRestoreFolderWhenItDoesNotExistInTrash() {
+        String nonExistentTrashPath = DataGenerator.generatePathWithNonExistentParent();
+        Response response = ResourceSteps.attemptToRestoreFolderFromTrash(nonExistentTrashPath);
+        Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_NOT_FOUND,
+                "Статус код должен быть 404 Not Found");
+        ErrorResponse errorResponse = response.as(ErrorResponse.class);
+        Assert.assertEquals(errorResponse.getError(), ConfigManager.getYandexTestData().errorNotFound(),
+                "Код ошибки должен быть DiskNotFoundError");
+    }
 }

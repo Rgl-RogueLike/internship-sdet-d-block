@@ -195,4 +195,21 @@ public final class ResourceSteps {
                 .extract()
                 .as(LinkResponse.class);
     }
+
+    /**
+     * Шаг: Попытка восстановления папки из корзины без проверки статус-кода.
+     *
+     * @param path Путь ресурса в корзине
+     * @return Ответ сервера
+     */
+    public static Response attemptToRestoreFolderFromTrash(String path) {
+        return given()
+                .spec(ApiConfig.getBaseSpec())
+                .queryParam("path", path)
+                .when()
+                .put(Endpoints.TRASH_RESTORE)
+                .then()
+                .extract()
+                .response();
+    }
 }
