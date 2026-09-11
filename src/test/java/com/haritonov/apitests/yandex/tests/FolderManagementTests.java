@@ -157,4 +157,14 @@ public class FolderManagementTests {
         Assert.assertEquals(errorResponse.getError(), ConfigManager.getYandexTestData().errorNotFound(),
                 "Код ошибки должен быть DiskNotFoundError");
     }
+
+    @Test(description = "TC-012: Восстановление папки с пустым значением параметра path")
+    public void shouldRestoreFolderWhenPathIsEmpty() {
+        Response response = ResourceSteps.attemptToRestoreFolderFromTrash(StringUtils.EMPTY);
+        Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_BAD_REQUEST,
+                "Статус код должен быть 404 Bad Request");
+        ErrorResponse errorResponse = response.as(ErrorResponse.class);
+        Assert.assertEquals(errorResponse.getError(), ConfigManager.getYandexTestData().errorFieldValidation(),
+                "Код ошибки должен быть FieldValidationError");
+    }
 }
