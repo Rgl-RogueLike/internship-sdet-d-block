@@ -117,4 +117,17 @@ public class FolderManagementTests {
         Assert.assertEquals(errorResponse.getError(), ConfigManager.getYandexTestData().errorFieldValidation(),
                 "Код ошибки должен быть FieldValidationError");
     }
+
+    @Test(description = "TC-009: Удаление уже удаленной папки (которая лежит в корзине)")
+    public void shouldNotDeleteFolderWhenItIsAlreadyInTrash() {
+        testFolderPath = DataGenerator.generateUniqueFolderPath();
+        ResourceSteps.createFolder(testFolderPath);
+        ResourceSteps.deleteFolder(testFolderPath);
+        Response response = ResourceSteps.attemptToDeleteFolder(testFolderPath);
+        Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_NOT_FOUND,
+                "Статус код должен быть 404 Not Found");
+        ErrorResponse errorResponse = response.as(ErrorResponse.class);
+        Assert.assertEquals(errorResponse.getError(), ConfigManager.getYandexTestData().errorNotFound(),
+                "Код ошибки должен быть DiskNotFoundError");
+    }
 }

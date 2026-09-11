@@ -104,7 +104,9 @@ public final class ResourceSteps {
                 .when()
                 .delete(Endpoints.RESOURCES)
                 .then()
-                .statusCode(HttpStatus.SC_NO_CONTENT);
+                .statusCode(HttpStatus.SC_NO_CONTENT)
+                .extract()
+                .response();
     }
 
     /**
