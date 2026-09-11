@@ -46,4 +46,10 @@ public interface YandexTestData extends Config {
      */
     @Key("error.not.found")
     String errorNotFound();
+
+    /**
+     * Префикс пути для корневого каталога Диска.
+     */
+    @Key("disk.path.prefix")
+    String diskPrefix();
 }

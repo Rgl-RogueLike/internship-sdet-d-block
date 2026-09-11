@@ -1,10 +1,15 @@
 package com.haritonov.apitests.yandex.steps;
 
 import com.haritonov.apitests.yandex.dto.response.LinkResponse;
+import com.haritonov.apitests.yandex.dto.response.TrashItem;
+import com.haritonov.apitests.yandex.dto.response.TrashResponse;
 import com.haritonov.apitests.yandex.endpoints.ApiConfig;
 import com.haritonov.apitests.yandex.endpoints.Endpoints;
 import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
+
+import java.util.Collections;
+import java.util.Optional;
 
 import static io.restassured.RestAssured.given;
 
@@ -143,5 +148,51 @@ public final class ResourceSteps {
                 .then()
                 .extract()
                 .response();
+    }
+
+    /**
+     * Шаг: Поиск реального пути (с хэшем) удаленной папки в корзине по её оригинальному пути.
+     *
+     * @param originPath Оригинальный путь папки
+     * @return Путь папки в корзине или null, если не найдено.
+     */
+    public static String findTrashedFolderPathByOrigin(String originPath) {
+        Response response = given()
+                .spec(ApiConfig.getBaseSpec())
+                .queryParam("path", "/")
+                .when()
+                .get(Endpoints.TRASH_RESOURCES)
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .extract()
+                .response();
+
+        return Optional.ofNullable(response.as(TrashResponse.class))
+                .map(TrashResponse::getEmbedded)
+                .map(TrashResponse.Embedded::getItems)
+                .orElseGet(Collections::emptyList)
+                .stream()
+                .filter(item -> originPath.equals(item.getOriginPath()))
+                .map(TrashItem::getPath)
+                .findFirst()
+                .orElse(null);
+    }
+
+    /**
+     * Шаг: Восстановление папки из корзины по ее пути (с хэшем).
+     *
+     * @param trashPath Путь папки в корзине
+     * @return DTO {@link LinkResponse} со ссылкой на восстановленный ресурс
+     */
+    public static LinkResponse restoreFolderFromTrash(String trashPath) {
+        return given()
+                .spec(ApiConfig.getBaseSpec())
+                .queryParam("path", trashPath)
+                .when()
+                .put(Endpoints.TRASH_RESTORE)
+                .then()
+                .statusCode(HttpStatus.SC_CREATED)
+                .extract()
+                .as(LinkResponse.class);
     }
 }

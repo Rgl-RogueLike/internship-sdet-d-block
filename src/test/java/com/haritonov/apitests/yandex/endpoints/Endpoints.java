@@ -21,5 +21,10 @@ public final class Endpoints {
     /**
      * Эндпоинт для управления корзиной
      */
-    public static final String TRASH_RESOURCES = "v1/disk/trash/resources";
+    public static final String TRASH_RESOURCES = "/v1/disk/trash/resources";
+
+    /**
+     * Эндпоинт для восстановления ресурсов из корзины.
+     */
+    public static final String TRASH_RESTORE = "/v1/disk/trash/resources/restore";
 }

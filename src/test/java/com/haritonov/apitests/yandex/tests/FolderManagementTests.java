@@ -130,4 +130,20 @@ public class FolderManagementTests {
         Assert.assertEquals(errorResponse.getError(), ConfigManager.getYandexTestData().errorNotFound(),
                 "Код ошибки должен быть DiskNotFoundError");
     }
+
+    @Test(description = "TC-010: Успешное восстановление папки из корзины")
+    public void shouldRestoreFolderFromTrashSuccessfully() {
+        ResourceSteps.clearTrash();
+        testFolderPath = DataGenerator.generateUniqueFolderPath();
+        ResourceSteps.createFolder(testFolderPath);
+        ResourceSteps.deleteFolder(testFolderPath);
+
+        String trashedPath = ResourceSteps.findTrashedFolderPathByOrigin(testFolderPath);
+        Assert.assertNotNull(trashedPath, "Путь удаленной папки в корзине не должен быть null");
+        LinkResponse restoreResponse = ResourceSteps.restoreFolderFromTrash(trashedPath);
+        Assert.assertNotNull(restoreResponse.getHref(), "Поле href в ответе восстановления не должно быть null");
+        Response getResponse = ResourceSteps.getFolderInfoResponse(testFolderPath);
+        Assert.assertEquals(getResponse.getStatusCode(), HttpStatus.SC_OK,
+                "Статус код должен быть 200 ОК");
+    }
 }
