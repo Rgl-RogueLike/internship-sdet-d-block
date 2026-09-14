@@ -33,7 +33,7 @@ public final class DataGenerator {
      * @return строка со сгенерированным текстом
      */
     public static String generatePostContent() {
-        int paragraphSize = ConfigManager.getTestData().paragraphSize();
+        int paragraphSize = ConfigManager.getWpTestData().paragraphSize();
         return faker.lorem().paragraph(paragraphSize);
     }
 

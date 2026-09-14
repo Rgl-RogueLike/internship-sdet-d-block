@@ -1,16 +1,16 @@
-package com.haritonov.apitests.config;
+package com.haritonov.apitests.wordpress.config;
 
 import org.aeonbits.owner.Config;
 
 /**
  * Интерфейс тестовых данных.
  * <p>
- * Связывает свойства из файла {@code test-data.properties}.
+ * Связывает свойства из файла {@code wp-test-data.properties}.
  * Содержит тестовые параметры,
  * статусы постов WordPress и коды ожидаемых ошибок API.
  */
-@Config.Sources("classpath:configurations/test-data.properties")
-public interface TestData extends Config {
+@Config.Sources("classpath:configurations/wp-test-data.properties")
+public interface WpTestData extends Config {
 
     /**
      * Количество предложений для генерации контента поста через Faker.

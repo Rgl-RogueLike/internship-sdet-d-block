@@ -142,7 +142,7 @@ public final class PostDao {
      * @return Сгенерированный ID созданного поста
      */
     public static int createPostDirectly(String title, String content, String status) {
-        String slugPrefix = ConfigManager.getTestData().slugPrefix();
+        String slugPrefix = ConfigManager.getWpTestData().slugPrefix();
         String slug = slugPrefix + System.currentTimeMillis();
         String sql = "INSERT INTO wp_posts (post_author, post_date, post_date_gmt, post_content, post_title, " +
                 "post_excerpt, post_status, post_name, post_modified, post_modified_gmt, post_type, " +

@@ -33,7 +33,7 @@ public class PostsGetTests extends BaseDbTest {
      */
     @BeforeMethod
     public void setupTestPost() {
-        String status = ConfigManager.getTestData().statusPublish();
+        String status = ConfigManager.getWpTestData().statusPublish();
         testPost = PostsDbHelper.createTestPostInDb(status);
         dbCreatedPostIds.add(testPost.id());
     }
@@ -58,7 +58,7 @@ public class PostsGetTests extends BaseDbTest {
                 "ID поста в ответе должен совпадать с ID из БД");
         Assert.assertEquals(postResponse.getTitle().getRaw(), testPost.title(),
                 "Заголовок raw должен совпадать с созданным в БД");
-        Assert.assertEquals(postResponse.getStatus(), ConfigManager.getTestData().statusPublish(),
+        Assert.assertEquals(postResponse.getStatus(), ConfigManager.getWpTestData().statusPublish(),
                 "Статус поста должен совпадать с созданным в БД");
     }
 
@@ -98,7 +98,7 @@ public class PostsGetTests extends BaseDbTest {
 
     @Test(description = "ТС-013: Фильтрация постов по валидному статусу")
     public void shouldFilterPostsWhenStatusIsValid() {
-        String status = ConfigManager.getTestData().statusDraft();
+        String status = ConfigManager.getWpTestData().statusDraft();
         PostsDbHelper.DbTestPost draftPost = PostsDbHelper.createTestPostInDb(status);
         dbCreatedPostIds.add(draftPost.id());
 
@@ -124,28 +124,28 @@ public class PostsGetTests extends BaseDbTest {
         Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_NOT_FOUND,
                 "Статус код должен быть 404 Not Found");
         Assert.assertEquals(response.jsonPath().getString("code"),
-                ConfigManager.getTestData().errorPostInvalidId(),
+                ConfigManager.getWpTestData().errorPostInvalidId(),
                 "Код ошибки должен быть rest_post_invalid_id");
     }
 
     @Test(description = "TC-015: Фильтрация постов по невалидному статусу")
     public void shouldNotFilterPostsWhenStatusInvalid() {
-        Response response = PostApiSteps.getPostsByStatus(ConfigManager.getTestData().statusInvalid());
+        Response response = PostApiSteps.getPostsByStatus(ConfigManager.getWpTestData().statusInvalid());
 
         Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_BAD_REQUEST,
                 "Статус код должен быть 400 Bad Request");
         Assert.assertEquals(response.jsonPath().getString("code"),
-                ConfigManager.getTestData().errorInvalidParam(),
+                ConfigManager.getWpTestData().errorInvalidParam(),
                 "Код ошибки должен быть rest_invalid_param");
     }
 
     @Test(description = "TC-016: Получение поста с невалидным форматом ID")
     public void shouldNotGetPostIdFormatString() {
-        Response response = PostApiSteps.getPostByStringId(ConfigManager.getTestData().invalidIdFormat());
+        Response response = PostApiSteps.getPostByStringId(ConfigManager.getWpTestData().invalidIdFormat());
         Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_NOT_FOUND,
                 "Статус код должен быть 404 Not Found");
         Assert.assertEquals(response.jsonPath().getString("code"),
-                ConfigManager.getTestData().errorNoRoute(),
+                ConfigManager.getWpTestData().errorNoRoute(),
                 "Код ошибки должен быть rest_no_route");
     }
 }
