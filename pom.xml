@@ -9,10 +9,26 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
+        <suiteFile>src/test/resources/testng.xml</suiteFile>
         <maven.compiler.source>25</maven.compiler.source>
         <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <profiles>
+        <profile>
+            <id>parallel-execution</id>
+            <activation>
+                <property>
+                    <name>env.TEST_MODE</name>
+                    <value>parallel</value>
+                </property>
+            </activation>
+            <properties>
+                <suiteFile>src/test/resources/testng-parallel.xml</suiteFile>
+            </properties>
+        </profile>
+    </profiles>
 
     <dependencies>
 
@@ -83,6 +99,17 @@
                             <version>1.18.42</version>
                         </path>
                     </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>${suiteFile}</suiteXmlFile>
+                    </suiteXmlFiles>
                 </configuration>
             </plugin>
         </plugins>

@@ -1,0 +1,17 @@
+<suite name="API Autotests Suite">
+
+    <test name="WordPress API Tests">
+        <classes>
+            <class name="com.haritonov.apitests.wordpress.tests.PostsCrudTests"/>
+            <class name="com.haritonov.apitests.wordpress.tests.PostsGetTests"/>
+        </classes>
+    </test>
+
+    <test name="Yandex Disk API Tests">
+        <classes>
+            <class name="com.haritonov.apitests.yandex.tests.DiskAuthTests"/>
+            <class name="com.haritonov.apitests.yandex.tests.FolderManagementTests"/>
+        </classes>
+    </test>
+
+</suite>
