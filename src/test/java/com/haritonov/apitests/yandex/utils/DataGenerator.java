@@ -31,4 +31,25 @@ public final class DataGenerator {
         String folderPrefix = ConfigManager.getYandexTestData().testFolderPrefix();
         return parent + "/" + folderPrefix + System.currentTimeMillis();
     }
+
+    /**
+     * Формирует полный путь файла на Диске, склеивая префикс, имя папки и имя файла.
+     *
+     * @param folderName Имя папки
+     * @param fileName Имя файла
+     * @return Полный путь в виде строки
+     */
+    public static String generateDiskFilePath(String folderName, String fileName) {
+        return ConfigManager.getYandexTestData().diskPrefix() + folderName + "/" + fileName;
+    }
+
+    /**
+     * Формирует полный путь папки на диске
+     *
+     * @param folderName Имя папки
+     * @return Полный путь в виде строки
+     */
+    public static String generateDiskFolderPath(String folderName) {
+        return ConfigManager.getYandexTestData().diskPrefix() + folderName;
+    }
 }

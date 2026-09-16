@@ -58,4 +58,28 @@ public interface YandexTestData extends Config {
      */
     @Key("conflict.suffix")
     String conflictSuffix();
+
+    /**
+     * Имя тестового файла, используемого для загрузки на Диск.
+     */
+    @Key("file.name")
+    String fileName();
+
+    /**
+     * Имя папки на Диске, используемой для загрузки
+     */
+    @Key("folder.input")
+    String folderInput();
+
+    /**
+     * Имя папки на Диске, используемой для копирования
+     */
+    @Key("folder.output")
+    String folderOutput();
+
+    /**
+     * Текстовое сообщение генерируемого текстового файла.
+     */
+    @Key("file.content")
+    String fileContent();
 }
