@@ -9,6 +9,8 @@ import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -275,5 +277,40 @@ public final class ResourceSteps {
                 .then()
                 .extract()
                 .response();
+    }
+
+    /**
+     * Шаг: Получение временной ссылки для скачивания файла с Диска.
+     *
+     * @param path Путь к файлу на Диске
+     * @return DTO {@link LinkResponse} со ссылкой на скачивание
+     */
+    public static LinkResponse getDownloadLink(String path) {
+        return given()
+                .spec(ApiConfig.getBaseSpec())
+                .queryParam("path", path)
+                .when()
+                .get(Endpoints.DOWNLOAD)
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .extract()
+                .as(LinkResponse.class);
+    }
+
+    /**
+     * Шаг: Скачивание файла по временной ссылке и возврат его содержимого в виде строки.
+     *
+     * @param downloadUrl Временная ссылка из метода {@link #getDownloadLink(String)}
+     * @return Строка с содержимым скачанного файла
+     */
+    public static String downloadFileContent(String downloadUrl) {
+        return given()
+                .urlEncodingEnabled(false)
+                .when()
+                .get(downloadUrl)
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .extract()
+                .asString();
     }
 }

@@ -44,6 +44,16 @@ public class FileOperationsTests {
     private String diskFilePath;
 
     /**
+     * Полный путь к папке "sdet-data" на Диске
+     */
+    private String sdetFolderPath;
+
+    /**
+     * Полный путь к загружаемому и скачиваемому файлу на диске.
+     */
+    private String sdetFilePath;
+
+    /**
      * Предусловие: Подготовка окружения перед каждым тестом.
      * <p>
      * Очищает корзину, создает тестовые папки на Диске и генерирует локальный тестовый файл.
@@ -54,16 +64,23 @@ public class FileOperationsTests {
         String fileContent = ConfigManager.getYandexTestData().fileContent();
         String inputFolderName = ConfigManager.getYandexTestData().folderInput();
         String outputFolderName = ConfigManager.getYandexTestData().folderOutput();
+        String sdetFolderName = ConfigManager.getYandexTestData().folderSdet();
 
         inputFolderPath = DataGenerator.generateDiskFolderPath(inputFolderName);
         outputFolderPath = DataGenerator.generateDiskFolderPath(outputFolderName);
+        sdetFolderPath = DataGenerator.generateDiskFolderPath(sdetFolderName);
+
         diskFilePath = DataGenerator.generateDiskFilePath(inputFolderName, fileName);
+        sdetFilePath = DataGenerator.generateDiskFilePath(sdetFolderName, fileName);
 
         ResourceSteps.clearTrash();
         ResourceSteps.createFolder(inputFolderPath);
         ResourceSteps.createFolder(outputFolderPath);
+        ResourceSteps.createFolder(sdetFolderPath);
 
         localFile = FileUtils.createTempFile(fileName, fileContent);
+        LinkResponse uploadLink = ResourceSteps.getUploadLink(sdetFilePath, false);
+        ResourceSteps.uploadFileToDisk(uploadLink.getHref(), localFile);
     }
 
     /**
@@ -73,6 +90,7 @@ public class FileOperationsTests {
     public void cleanUpFileTest() {
         ResourceSteps.safeDeleteFolder(inputFolderPath);
         ResourceSteps.safeDeleteFolder(outputFolderPath);
+        ResourceSteps.safeDeleteFolder(sdetFolderPath);
         ResourceSteps.clearTrash();
         FileUtils.deleteFile(localFile);
     }
@@ -105,5 +123,16 @@ public class FileOperationsTests {
         Assert.assertNotNull(errorResponse.getError(), "Поле error не должно быть null");
         Assert.assertNotNull(errorResponse.getDescription(), "Поле description не должно быть null");
         Assert.assertNotNull(errorResponse.getMessage(), "Поле message не должно быть null");
+    }
+
+    @Test(description = "TC-002: Скачивание текстового файла")
+    public void shouldDownloadFileAndCompareContent() {
+        LinkResponse downloadLink = ResourceSteps.getDownloadLink(sdetFilePath);
+        Assert.assertNotNull(downloadLink.getHref(), "Поле href в ответе не должно быть null");
+
+        String downloadContent = ResourceSteps.downloadFileContent(downloadLink.getHref());
+        String expectedContent = ConfigManager.getYandexTestData().fileContent();
+        Assert.assertEquals(downloadContent, expectedContent,
+                "Содержимое скачанного файла должно совпадать с оригиналом");
     }
 }

@@ -82,4 +82,10 @@ public interface YandexTestData extends Config {
      */
     @Key("file.content")
     String fileContent();
+
+    /**
+     * Имя папки на Диске, используемой для загрузки и скачивания файла.
+     */
+    @Key("folder.sdet")
+    String folderSdet();
 }
