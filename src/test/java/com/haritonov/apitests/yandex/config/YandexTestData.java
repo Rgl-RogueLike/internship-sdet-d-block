@@ -88,4 +88,16 @@ public interface YandexTestData extends Config {
      */
     @Key("folder.sdet")
     String folderSdet();
+
+    /**
+     * Имя второго тестового файла.
+     */
+    @Key("file.name.second")
+    String fileNameSecond();
+
+    /**
+     * Текстовое содержимое второго тестового файла.
+     */
+    @Key("file.content.second")
+    String fileContentSecond();
 }

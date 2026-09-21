@@ -313,4 +313,19 @@ public final class ResourceSteps {
                 .extract()
                 .asString();
     }
+
+    /**
+     * Шаг: Получение списка всех фалов на Диске.
+     *
+     * @return Ответ от сервера
+     */
+    public static Response getFilesList() {
+        return given()
+                .spec(ApiConfig.getBaseSpec())
+                .when()
+                .get(Endpoints.FILES)
+                .then()
+                .extract()
+                .response();
+    }
 }
