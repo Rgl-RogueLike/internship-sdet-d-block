@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "properties": {
+    "limit": { "type": "integer" },
+    "offset": { "type": "integer" },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "preview": { "type": "string" },
+          "created": { "type": "string" },
+          "modified": { "type": "string" },
+          "path": { "type": "string" },
+          "md5": { "type": "string" },
+          "type": { "type": "string" },
+          "mime_type": { "type": "string" },
+          "size": { "type": "integer" },
+          "media_type": { "type": "string" }
+        },
+        "required": ["name", "type", "path"]
+      }
+    }
+  },
+  "required": ["items", "limit", "offset"]
+}

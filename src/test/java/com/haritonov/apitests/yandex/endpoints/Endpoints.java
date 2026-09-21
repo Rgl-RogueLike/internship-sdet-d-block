@@ -14,12 +14,12 @@ public final class Endpoints {
     public static final String DISK = "/v1/disk/";
 
     /**
-     * Эндпоинт для управления папками
+     * Эндпоинт для управления папками.
      */
     public static final String RESOURCES = "/v1/disk/resources";
 
     /**
-     * Эндпоинт для управления корзиной
+     * Эндпоинт для управления корзиной.
      */
     public static final String TRASH_RESOURCES = "/v1/disk/trash/resources";
 
@@ -39,7 +39,12 @@ public final class Endpoints {
     public static final String COPY = "/v1/disk/resources/copy";
 
     /**
-     * Эндпоинт для получения ссылки на скачивание файла
+     * Эндпоинт для получения ссылки на скачивание файла.
      */
     public static final String DOWNLOAD = "/v1/disk/resources/download";
+
+    /**
+     * Эндпоинт для получения списка всех файлов на Диске.
+     */
+    public static final String FILES = "/v1/disk/resources/files";
 }
