@@ -29,7 +29,7 @@ public final class Endpoints {
     public static final String TRASH_RESTORE = "/v1/disk/trash/resources/restore";
 
     /**
-     * Эндпоинт жля получения ссылки на загрузку файла.
+     * Эндпоинт для получения ссылки на загрузку файла.
      */
     public static final String UPLOAD = "/v1/disk/resources/upload";
 
