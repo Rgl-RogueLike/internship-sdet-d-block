@@ -8,6 +8,9 @@ import com.haritonov.apitests.yandex.endpoints.Endpoints;
 import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
 
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -17,6 +20,8 @@ import static io.restassured.RestAssured.given;
  * Шаги для взаимодействия с ресурсами
  */
 public final class ResourceSteps {
+
+    private static final String OCTET_STREAM_CONTENT_TYPE = "application/octet-stream";
 
     private ResourceSteps() {
     }
@@ -212,5 +217,100 @@ public final class ResourceSteps {
                 .then()
                 .extract()
                 .response();
+    }
+
+    /**
+     * Шаг: Получение временной ссылки для загрузки файла на Диск.
+     *
+     * @param path Путь на Диске, куда будет загружен файл
+     * @param overwrite Флаг перезаписи существующего файла
+     * @return DTO {@link LinkResponse} включает временную ссылку для загрузки
+     */
+    public static LinkResponse getUploadLink(String path, boolean overwrite) {
+        return given()
+                .spec(ApiConfig.getBaseSpec())
+                .queryParam("path", path)
+                .queryParam("overwrite", overwrite)
+                .when()
+                .get(Endpoints.UPLOAD)
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .extract()
+                .as(LinkResponse.class);
+    }
+
+    /**
+     * Шаг: Загрузка локального файла на Яндекс.Диск по временной ссылке.
+     * <p>
+     * Отправляет PUT запрос с байтами файла. Не использует базовую спецификацию,
+     * так как загрузка осуществляется по уникальному временному URL. Ожидается статус 201 Created.
+     *
+     * @param uploadUrl Временная ссылка полученная из метода {@link #getUploadLink(String, boolean)}
+     * @param file Локальный файл {@link File} для загрузки
+     */
+    public static void uploadFileToDisk(String uploadUrl, File file) {
+        given()
+                .header("Content-type", OCTET_STREAM_CONTENT_TYPE)
+                .body(file)
+                .when()
+                .put(uploadUrl)
+                .then()
+                .statusCode(HttpStatus.SC_CREATED);
+    }
+
+    /**
+     * Шаг: Попытка копировать файл без проверки статус-кода.
+     * <p>
+     * Используется для проверок ка успеха (201 Created), так и конфликта (409 Conflict).
+     *
+     * @param from Путь откуда копировать
+     * @param to Путь куда копировать
+     * @return Ответ сервера {@link Response}
+     */
+    public static Response attemptToCopyFile(String from, String to) {
+        return given()
+                .spec(ApiConfig.getBaseSpec())
+                .queryParam("from", from)
+                .queryParam("path", to)
+                .when()
+                .post(Endpoints.COPY)
+                .then()
+                .extract()
+                .response();
+    }
+
+    /**
+     * Шаг: Получение временной ссылки для скачивания файла с Диска.
+     *
+     * @param path Путь к файлу на Диске
+     * @return DTO {@link LinkResponse} со ссылкой на скачивание
+     */
+    public static LinkResponse getDownloadLink(String path) {
+        return given()
+                .spec(ApiConfig.getBaseSpec())
+                .queryParam("path", path)
+                .when()
+                .get(Endpoints.DOWNLOAD)
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .extract()
+                .as(LinkResponse.class);
+    }
+
+    /**
+     * Шаг: Скачивание файла по временной ссылке и возврат его содержимого в виде строки.
+     *
+     * @param downloadUrl Временная ссылка из метода {@link #getDownloadLink(String)}
+     * @return Строка с содержимым скачанного файла
+     */
+    public static String downloadFileContent(String downloadUrl) {
+        return given()
+                .urlEncodingEnabled(false)
+                .when()
+                .get(downloadUrl)
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .extract()
+                .asString();
     }
 }

@@ -27,4 +27,19 @@ public final class Endpoints {
      * Эндпоинт для восстановления ресурсов из корзины.
      */
     public static final String TRASH_RESTORE = "/v1/disk/trash/resources/restore";
+
+    /**
+     * Эндпоинт для получения ссылки на загрузку файла.
+     */
+    public static final String UPLOAD = "/v1/disk/resources/upload";
+
+    /**
+     * Эндпоинт для копирования ресурсов.
+     */
+    public static final String COPY = "/v1/disk/resources/copy";
+
+    /**
+     * Эндпоинт для получения ссылки на скачивание файла
+     */
+    public static final String DOWNLOAD = "/v1/disk/resources/download";
 }
